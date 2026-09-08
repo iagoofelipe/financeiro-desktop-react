@@ -1,0 +1,117 @@
+:root {
+  --text: #000000;
+  --text-secondary: #353535;
+  --bg: #fff;
+  --bg-secondary: #fff;
+  --bg-tertiary: #fff;
+  --border-color: #e5e4e7;
+  --border-radius: .375rem;
+  --space: 1.25rem;
+  --bg-highlight-primary: #f67928;
+  --bg-highlight-secondary: rgba(102, 53, 21, 0.432);
+  --highlight-color: #fff;
+
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+
+  letter-spacing: 0.18px;
+  color-scheme: light dark;
+  /* color: var(--text); */
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* @media (max-width: 1024px) {
+    font-size: 16px;
+  } */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #ffff;
+    --text-secondary: #d3d3d3;
+    --bg: #000000;
+    --bg-secondary: #121212;
+    --bg-tertiary: #232324;
+    --border-color: #2e303a;
+  }
+}
+
+#root {
+  background: var(--bg);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100vh;
+  width: 100vw;
+}
+
+* {
+  font: 12pt var(--sans);
+}
+
+body {
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.card {
+  padding: 1.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
+
+.title {
+  font-size: 30pt;
+  font-weight: 500;
+}
+
+.subtitle {
+  font-size: 18pt;
+}
+
+.btn {
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition-duration: .15s;
+}
+
+.btn:hover {
+  background: var(--bg-highlight-secondary);
+  border: 1px solid var(--bg-highlight-primary);
+  color: var(--bg-highlight-primary);
+}
+
+.btn:active {
+  background: transparent;
+}
+
+.btn-focus {
+  background: var(--bg-highlight-primary);
+  color: var(--primary-color);
+}
+
+input:disabled {
+  background: var(--bg-tertiary);
+}
+
+.btn:disabled {
+  opacity: .65;
+  pointer-events: none;
+}

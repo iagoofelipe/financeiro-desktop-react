@@ -1,0 +1,19 @@
+.line-edit-inp {
+  padding: .5rem;
+  width: stretch;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: transparent;
+
+  transition: border-color .15s ease-in-out;
+}
+
+.line-edit-label {
+  margin-bottom: .5rem;
+  color: var(--text-secondary);
+}
+
+.line-edit-inp:focus {
+  outline: none;
+  border-color: var(--bg-highlight-primary);
+}

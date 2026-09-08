@@ -1,0 +1,23 @@
+.login {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 2rem;
+  margin: auto;
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+  }
+
+  img {
+    height: 500px;
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .login img {
+    display: none;
+  }
+}
