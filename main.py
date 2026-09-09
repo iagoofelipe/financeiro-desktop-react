@@ -7,8 +7,8 @@ if __name__ == '__main__':
         'Financeiro',
         'http://localhost:5173',
         js_api=api,
-        width=800,
-        height=600
+        width=1400,
+        height=850
     )
     api.setWindow(window)
     webview.start(debug=True)

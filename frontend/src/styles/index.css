@@ -1,14 +1,14 @@
 :root {
   --text: #000000;
   --text-secondary: #353535;
-  --bg: #fff;
-  --bg-secondary: #fff;
-  --bg-tertiary: #fff;
+  --bg: #F9F9F9;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #F3F3F3;
   --border-color: #e5e4e7;
   --border-radius: .375rem;
   --space: 1.25rem;
   --bg-highlight-primary: #f67928;
-  --bg-highlight-secondary: rgba(102, 53, 21, 0.432);
+    --bg-highlight-secondary: rgb(233, 146, 88);
   --highlight-color: #fff;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -33,8 +33,9 @@
     --text-secondary: #d3d3d3;
     --bg: #000000;
     --bg-secondary: #121212;
-    --bg-tertiary: #232324;
+    --bg-tertiary: #232323;
     --border-color: #2e303a;
+    --bg-highlight-secondary: rgb(128, 73, 36);
   }
 }
 
@@ -93,7 +94,7 @@ a:hover {
 }
 
 .btn:hover {
-  background: var(--bg-highlight-secondary);
+  background: transparent;
   border: 1px solid var(--bg-highlight-primary);
   color: var(--bg-highlight-primary);
 }
@@ -104,7 +105,7 @@ a:hover {
 
 .btn-focus {
   background: var(--bg-highlight-primary);
-  color: var(--primary-color);
+  color: var(--highlight-color);
 }
 
 input:disabled {
