@@ -3,6 +3,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom'
 import { ToastProvider } from './context/ToastContext'
 import Login from "./pages/Login"
 import Home from "./pages/Home"
+import CreateAccount from './pages/CreateAccount'
 
 export default function App() {
   return (
@@ -10,6 +11,7 @@ export default function App() {
       <HashRouter>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/createAccount" element={<CreateAccount />} />
           <Route path="/home" element={<Home />} />
         </Routes>
       </HashRouter>

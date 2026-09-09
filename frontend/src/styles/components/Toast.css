@@ -19,7 +19,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  font-family: system-ui, -apple-system, sans-serif;
+  /* font-family: system-ui, -apple-system, sans-serif; */
   animation: slideIn 0.2s ease-out;
 }
 
@@ -51,10 +51,10 @@
 }
 
 /* Variantes de Cor */
-.toast-success { background-color: #198754; }
-.toast-danger { background-color: #dc3545; }
-.toast-warning { background-color: #ffc107; color: #000; }
-.toast-info { background-color: #0dcaf0; color: #000; }
+.toast-success { background-color: #198755; }
+.toast-danger { background-color: #dc35464d; }
+.toast-warning { background-color: #ffc10760; }
+.toast-info { background-color: #0dcaf063; }
 
 @keyframes slideIn {
   from {
