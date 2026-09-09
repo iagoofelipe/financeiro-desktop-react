@@ -8,9 +8,10 @@ export default function Home() {
   }
 
   return (
-    <>
-      <h1>Tela Inicial</h1>
+    <div style={{display: "flex", flexDirection: "column", rowGap: "1rem"}}>
+      <p>Tela Inicial</p>
       <button onClick={on_click}>Sair</button>
-    </>
+      <button onClick={() => navigate('/error')}>Error Page</button>
+    </div>
   )
 }

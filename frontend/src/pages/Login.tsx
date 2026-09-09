@@ -52,7 +52,7 @@ export default function Login() {
         <Checkbox label='Lembrar de mim' disabled={blockInputs} onChange={(v) => setRemember(v)} />
         <button className='btn btn-focus' disabled={blockInputs} onClick={onAuth}>acessar</button>
       </div>
-      <img src="/data-extraction.svg" />
+      <img src="/imgs/data-extraction.svg" />
     </div>
   )
 }

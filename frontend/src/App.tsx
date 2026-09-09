@@ -3,16 +3,21 @@ import { HashRouter, Routes, Route } from 'react-router-dom'
 import { ToastProvider } from './context/ToastContext'
 import Login from "./pages/Login"
 import Home from "./pages/Home"
+import Error from './pages/Error'
 import CreateAccount from './pages/CreateAccount'
+import Loading from './pages/Loading'
 
 export default function App() {
   return (
     <ToastProvider>
       <HashRouter>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<Loading />} />
+          <Route path="/loading" element={<Loading />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/createAccount" element={<CreateAccount />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/error" element={<Error />} />
         </Routes>
       </HashRouter>
     </ToastProvider>

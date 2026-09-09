@@ -1,8 +1,8 @@
 import webview
-from backend.api import Api
+from backend.api import ServerAPI
 
 if __name__ == '__main__':
-    api = Api()
+    api = ServerAPI()
     window = webview.create_window(
         'Financeiro',
         'http://localhost:5173',
@@ -10,4 +10,5 @@ if __name__ == '__main__':
         width=800,
         height=600
     )
+    api.setWindow(window)
     webview.start(debug=True)

@@ -15,6 +15,8 @@ export interface CreateAccountData {
 export interface PyWebViewAPI {
   authenticate: (data:AuthData) => Promise<boolean>;
   createAccount: (data:CreateAccountData) => Promise<{success:boolean, error:string}>;
+  isAuthenticated: () => Promise<boolean>;
+  isServerAvailable: () => Promise<boolean>;
 }
 
 declare global {
