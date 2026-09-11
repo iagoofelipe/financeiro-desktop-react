@@ -26,7 +26,9 @@ class JavaScriptAPI:
     else:
       return dict(success=True, error='')
 
-  def getUser(self): return self._model.user
+  def getUser(self):
+    self._model.checkCredentials()
+    return self._model.user
   def getDefaultYearMonth(self): return self._model.defaultYearMonth
   
   #-----------------------------------------------------
