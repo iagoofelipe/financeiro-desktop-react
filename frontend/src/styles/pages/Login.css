@@ -14,6 +14,15 @@
   img {
     height: 500px;
   }
+
+  .title-1 {
+    font-size: 30pt;
+    font-weight: 500;
+  }
+
+  .title-2 {
+    font-size: 18pt;
+  }
 }
 
 @media screen and (max-width: 1300px) {

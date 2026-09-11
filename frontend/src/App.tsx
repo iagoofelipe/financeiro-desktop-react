@@ -23,27 +23,3 @@ export default function App() {
     </ToastProvider>
   )
 }
-
-
-// import { useState } from 'react';
-
-// export default function App() {
-//   const [resposta, setResposta] = useState<string>('');
-
-//   const chamarPython = async () => {
-//     if (window.pywebview?.api) {
-//       const res = await window.pywebview.api.saudar('Dev');
-//       setResposta(res);
-//     } else {
-//       setResposta('pywebview API não detectada (rode através do Python).');
-//     }
-//   };
-
-//   return (
-//     <div className='app'>
-//       <h1>React + pywebview</h1>
-//       <button onClick={chamarPython}>Chamar Método Python</button>
-//       {resposta && <p>{resposta}</p>}
-//     </div>
-//   );
-// }

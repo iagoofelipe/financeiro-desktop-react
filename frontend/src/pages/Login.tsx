@@ -1,6 +1,6 @@
 import '/src/styles/pages/Login.css'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Checkbox from '../components/Checkbox'
 import LineEdit from '../components/LineEdit'
 import { useToast } from '../context/ToastContext';
@@ -13,6 +13,24 @@ export default function Login() {
   const [blockInputs, setBlockInputs] = useState(false);
   const { addToast } = useToast();
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    const handleConnectionBroken = () => {
+      setBlockInputs(true);
+    };
+
+    const handleConnectionRestored = () => {
+      setBlockInputs(false);
+    };
+    
+    window.addEventListener('connection-broken', handleConnectionBroken);
+    window.addEventListener('connection-restored', handleConnectionRestored);
+
+    return () => {
+    window.removeEventListener('connection-broken', handleConnectionBroken);
+      window.removeEventListener('connection-restored', handleConnectionRestored);
+    };
+  }, [setBlockInputs]);
 
   const onAuth = async () => {
     // verificando campos digitados
@@ -26,9 +44,9 @@ export default function Login() {
     }
 
     setBlockInputs(true);
-    const success = await window.pywebview?.api.authenticate({ username: username, password: password, remember: remember });
+    const response = await window.pywebview?.api.authenticate(username, password, remember);
 
-    if (success) {
+    if (response?.success) {
       navigate("/home");
       return;
     }
@@ -36,7 +54,7 @@ export default function Login() {
     setBlockInputs(false);
     addToast({
       title: 'Autenticação',
-      message: 'Usuário ou senha incorretos!',
+      message: response?.error ?? '',
       type: 'warning',
     });
   }
@@ -44,8 +62,8 @@ export default function Login() {
   return (
     <div className='login'>
       <div className='card form'>
-        <p className='title' style={{ textAlign: 'center' }}>Financeiro</p>
-        <p className='subtitle' style={{ textAlign: 'center' }}>Seu controle financeiro em um só lugar</p>
+        <p className='title-1' style={{ textAlign: 'center' }}>Financeiro</p>
+        <p className='title-2' style={{ textAlign: 'center' }}>Seu controle financeiro em um só lugar</p>
         <LineEdit label='Usuário' disabled={blockInputs} onChange={(v) => setUsername(v)} />
         <LineEdit label='Senha' disabled={blockInputs} mask onReturnPressed={onAuth} onChange={(v) => setPassword(v)} />
         <p style={{ color: 'var(--text-secondary)' }}>Não possui uma conta? <a onClick={() => navigate('/createAccount')} style={{ color: 'var(--text-secondary)' }}>crie agora</a></p>

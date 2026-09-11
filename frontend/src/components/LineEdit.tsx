@@ -27,7 +27,7 @@ export default function LineEdit({label, value, mask, disabled, onChange, onRetu
   return (
     <div style={{width: '100%'}}>
       {label && <p className='line-edit-label'>{label}</p>}
-      <input type={mask? "password" : "text"} onKeyDown={handleKeyDown} onChange={handleChange} value={value} className="line-edit-inp" disabled={disabled} />
+      <input type={mask? "password" : "text"} onKeyDown={handleKeyDown} onChange={handleChange} value={value} className="form-control" disabled={disabled} />
     </div>
   )
 }

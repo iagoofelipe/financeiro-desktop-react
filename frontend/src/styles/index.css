@@ -6,9 +6,10 @@
   --bg-tertiary: #F3F3F3;
   --border-color: #e5e4e7;
   --border-radius: .375rem;
-  --space: 1.25rem;
+  --gap: 1rem;
+  --padding: 1rem;
   --bg-highlight-primary: #f67928;
-    --bg-highlight-secondary: rgb(233, 146, 88);
+  --bg-highlight-secondary: rgb(233, 146, 88);
   --highlight-color: #fff;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -69,20 +70,24 @@ a:hover {
   text-decoration: underline;
 }
 
+hr {
+  opacity: .25;
+}
+
 .card {
-  padding: 1.5rem;
+  padding: var(--padding);
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
 }
 
-.title {
-  font-size: 30pt;
+.title, .title-1 {
+  font-size: 1.35rem;
   font-weight: 500;
 }
 
-.subtitle {
-  font-size: 18pt;
+.title-2 {
+  font-size: 1.25rem;
 }
 
 .btn {
@@ -91,12 +96,20 @@ a:hover {
   border-radius: var(--border-radius);
   cursor: pointer;
   transition-duration: .15s;
+  background: transparent;
+}
+
+.btn-outline {
+  border-color: var(--border-color);
 }
 
 .btn:hover {
   background: transparent;
   border: 1px solid var(--bg-highlight-primary);
-  color: var(--bg-highlight-primary);
+
+  &, * {
+    color: var(--bg-highlight-primary);
+  }
 }
 
 .btn:active {
@@ -115,4 +128,33 @@ input:disabled {
 .btn:disabled {
   opacity: .65;
   pointer-events: none;
+}
+
+.h-line {
+  height: 1px;
+  width: stretch;
+  background: var(--border-color);
+  
+}
+.h-line-overflow-parent {
+  margin-inline-start: calc(-1 * var(--padding));
+  margin-inline-end: calc(-1 * var(--padding));
+}
+
+.form-control {
+  padding: .5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: transparent;
+
+  transition: border-color .15s ease-in-out;
+
+  [type=text], [type=password] {
+    width: stretch;
+  }
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--bg-highlight-primary);
 }

@@ -1,0 +1,33 @@
+.home-container {
+  display: flex;
+  flex-direction: row;
+  column-gap: var(--gap);
+  height: 100%;
+
+  > nav {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--gap);
+    width: 290px;
+  }
+
+  .nav-collapsed {
+    width: auto;
+  }
+
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    font-weight: 500;
+    color: var(--text-secondary);
+
+    * {
+      height: 25px;
+    }
+
+    p {
+      margin-left: 10px;
+    }
+  }
+}

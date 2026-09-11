@@ -1,9 +1,3 @@
-export interface AuthData {
-  username: string;
-  password: string;
-  remember: boolean;
-}
-
 export interface CreateAccountData {
   username: string;
   password: string;
@@ -12,11 +6,25 @@ export interface CreateAccountData {
   lastName: string;
 }
 
+export interface UserData {
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+}
+
+export interface ConnectionRestoredData {
+  authenticationRequired: boolean;
+}
+
 export interface PyWebViewAPI {
-  authenticate: (data:AuthData) => Promise<boolean>;
-  createAccount: (data:CreateAccountData) => Promise<{success:boolean, error:string}>;
+  logout: () => Promise<void>;
+  authenticate: (username: string, password: string, remember: boolean) => Promise<{success:boolean, error:string}>;
   isAuthenticated: () => Promise<boolean>;
-  isServerAvailable: () => Promise<boolean>;
+  createAccount: (data:CreateAccountData) => Promise<{success:boolean, error:string}>;
+  getUser: () => Promise<UserData|undefined>;
+  getDefaultYearMonth: () => Promise<string>;
 }
 
 declare global {
