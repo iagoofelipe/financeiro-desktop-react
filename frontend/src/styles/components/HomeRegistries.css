@@ -1,0 +1,22 @@
+.home-registries {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  /* row-gap: var(--gap); */
+
+  .header {
+    display: flex;
+    flex-direction: row;
+    column-gap: var(--gap);
+    align-items: center;
+  }
+
+  .header .details {
+    display: flex;
+    flex-direction: row;
+    column-gap: .5rem;
+    align-items: center;
+    color: var(--text-secondary);
+  }
+}
+

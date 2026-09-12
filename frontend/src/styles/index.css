@@ -8,35 +8,38 @@
   --border-radius: .375rem;
   --gap: 1rem;
   --padding: 1rem;
+  --padding-form-control: 8.5px;
   --bg-highlight-primary: #f67928;
   --bg-highlight-secondary: rgb(233, 146, 88);
   --highlight-color: #fff;
+  --success-color: #006a00;
+  --fail-color: #6a0000;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
 
   letter-spacing: 0.18px;
   color-scheme: light dark;
-  /* color: var(--text); */
   background: var(--bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  /* @media (max-width: 1024px) {
-    font-size: 16px;
-  } */
+  scrollbar-color: #C2C2C2 transparent;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #ffff;
-    --text-secondary: #d3d3d3;
+    --text-secondary: #979797;
     --bg: #000000;
     --bg-secondary: #121212;
     --bg-tertiary: #232323;
     --border-color: #2e303a;
-    --bg-highlight-secondary: rgb(128, 73, 36);
+    --bg-highlight-secondary: rgba(252, 101, 0, 0.1);
+    --success-color: #205e20;
+    --fail-color: #990a0a;
+
+    scrollbar-color: #3B3B3B transparent;
   }
 }
 
@@ -74,6 +77,19 @@ hr {
   opacity: .25;
 }
 
+option {
+  background-color: var(--bg-secondary);
+}
+
+.win-icon {
+  font-family: 'Segoe Fluent Icons', 'Segoe MDL2 Assets';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  display: inline-block;
+  user-select: none;
+}
+
 .card {
   padding: var(--padding);
   background: var(--bg-secondary);
@@ -91,7 +107,7 @@ hr {
 }
 
 .btn {
-  padding: 10px;
+  padding: 9px;
   border: 1px solid transparent;
   border-radius: var(--border-radius);
   cursor: pointer;
@@ -134,18 +150,24 @@ input:disabled {
   height: 1px;
   width: stretch;
   background: var(--border-color);
-  
 }
+
+.v-line {
+  width: 1px;
+  height: stretch;
+  background: var(--border-color);
+}
+
 .h-line-overflow-parent {
   margin-inline-start: calc(-1 * var(--padding));
   margin-inline-end: calc(-1 * var(--padding));
 }
 
 .form-control {
-  padding: .5rem;
+  padding: var(--padding-form-control);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
-  background-color: transparent;
+  background-color: var(--bg-secondary);
 
   transition: border-color .15s ease-in-out;
 
@@ -154,7 +176,98 @@ input:disabled {
   }
 }
 
+select.form-control {
+  appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right var(--padding-form-control) center;
+  min-width: 150px;
+}
+
+.form-control-cancelable {
+  --border-color: var(--bg-highlight-primary);
+
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background-color: var(--bg-highlight-secondary);
+  
+  .form-control {
+    border: none;
+    border-radius: 0;
+    border-right: 1px solid var(--border-color);
+    background-color: transparent;
+    width: 150px;
+  }
+
+  .win-icon {
+    font-size: 13px;
+    padding: var(--padding-form-control) .8rem;
+    cursor: pointer;
+  }
+}
+
 .form-control:focus {
   outline: none;
   border-color: var(--bg-highlight-primary);
+}
+
+.select-btn-group {
+  border: 1px solid var(--border-color);
+  /* padding: var(--padding-form-control); */
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: row;
+  column-gap: .5rem;
+  
+
+  .btn-focus {
+    pointer-events: none;
+  }
+}
+
+.transaction-status {
+  padding: 10px;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+}
+
+.transaction-status-late {
+  color: rgb(236, 28, 28);
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+.transaction-status-accounted {
+  color: rgb(57, 101, 224);
+  background-color: rgba(57, 101, 224, 0.1);
+}
+
+.transaction-status-pending {
+  color: rgb(255, 115, 0);
+  background-color: rgba(255, 115, 0, 0.1);
+}
+
+.transaction-status-ok {
+  color: rgb(66, 161, 37);
+  background-color: rgba(81, 255, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  .transaction-status-late {
+    background-color: rgba(255, 0, 0, 0.1);
+  }
+
+  .transaction-status-accounted {
+    background-color: rgba(57, 101, 224, 0.1);
+  }
+
+  .transaction-status-pending {
+    background-color: rgba(255, 115, 0, 0.1);
+  }
+
+  .transaction-status-ok {
+    background-color: rgba(81, 255, 0, 0.1);
+  }
 }

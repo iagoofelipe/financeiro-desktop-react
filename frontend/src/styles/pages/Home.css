@@ -9,6 +9,10 @@
     flex-direction: column;
     row-gap: var(--gap);
     width: 290px;
+
+    .win-icon {
+      font-size: 25px;
+    }
   }
 
   .nav-collapsed {
@@ -20,7 +24,6 @@
     align-items: center;
     padding: 10px;
     font-weight: 500;
-    color: var(--text-secondary);
 
     * {
       height: 25px;
@@ -29,5 +32,9 @@
     p {
       margin-left: 10px;
     }
+  }
+
+  .nav-btn:not(.btn-focus) {
+    color: var(--text-secondary);
   }
 }

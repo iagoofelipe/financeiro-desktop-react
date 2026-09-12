@@ -26,10 +26,16 @@ class JavaScriptAPI:
     else:
       return dict(success=True, error='')
 
-  def getUser(self):
-    self._model.checkCredentials()
-    return self._model.user
+  def getUser(self): return self._model.user
   def getDefaultYearMonth(self): return self._model.defaultYearMonth
+  def getCards(self): return self._model.request('GET', '/getCards')
+
+  def getRegistries(self, params):
+    if 'yearMonth' in params:
+      params['date_ref'] = params.pop('yearMonth')+'-01'
+    if 'cardId' in params:
+      params['card_id'] = params.pop('cardId')
+    return self._model.request('GET', '/getRegistries', params=params)
   
   #-----------------------------------------------------
   # eventos
