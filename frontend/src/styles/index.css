@@ -171,7 +171,7 @@ input:disabled {
 
   transition: border-color .15s ease-in-out;
 
-  [type=text], [type=password] {
+  &[type=text], &[type=password] {
     width: stretch;
   }
 }

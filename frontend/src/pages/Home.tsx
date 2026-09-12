@@ -2,8 +2,10 @@ import '../styles/pages/Home.css'
 import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import HomeDashboards from '../components/HomeDashboards'
 import HomeRegistries from '../components/HomeRegistries'
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
+  const navigate = useNavigate();
   const [navCollapsed, setNavCollapsed] = useState(false);
   const [nav, setNav] = useState('Registros');
   const [user, setUser] = useState('Usuário');
@@ -73,6 +75,10 @@ export default function Home() {
     };
   }, []);
 
+  const handleLogout = async () => {
+    await window.pywebview?.api.logout();
+    navigate('/login');
+  };
 
   const handleNavClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setNav(e.currentTarget.name);
@@ -111,7 +117,7 @@ export default function Home() {
         <div style={{height: 'stretch'}}></div>
         <div className='h-line h-line-overflow-parent' />
         <button onClick={handleNavClick} name='user' className='btn nav-btn'><span className='win-icon'>&#xE77B;</span><p hidden={navCollapsed}>{user}</p></button>
-        <button onClick={handleNavClick} name='logout' className='btn nav-btn' disabled={offlineMode}><span className='win-icon'>&#xF3B1;</span><p hidden={navCollapsed}>Sair</p></button>
+        <button onClick={handleLogout} name='logout' className='btn nav-btn' disabled={offlineMode}><span className='win-icon'>&#xF3B1;</span><p hidden={navCollapsed}>Sair</p></button>
       </nav>
       
       <div style={{display: 'flex', flexDirection: 'column', rowGap: 'var(--gap)', width: '100%'}}>
