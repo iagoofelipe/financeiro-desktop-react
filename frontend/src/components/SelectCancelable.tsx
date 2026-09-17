@@ -4,10 +4,11 @@ interface SelectCancelableProps {
   title:string;
   values: Array<{value:string, text?:string}>;
   disabled?:boolean;
+  notStretch?:boolean;
   onChanged?: (val:string) => void;
 };
 
-export default function SelectCancelable({ title, values, disabled, onChanged }:SelectCancelableProps) {
+export default function SelectCancelable({ title, values, disabled, notStretch, onChanged }:SelectCancelableProps) {
   const [selection, setSelection] = useState('');
   const [isSelected, setIsSelected] = useState(false);
 
@@ -25,7 +26,7 @@ export default function SelectCancelable({ title, values, disabled, onChanged }:
 
   return (
     <>
-      <select className='form-control' disabled={disabled} value={selection} hidden={isSelected} onChange={handleSelectionChanged}>
+      <select className={`form-control ${notStretch && 'not-stretch'}`} disabled={disabled} value={selection} hidden={isSelected} onChange={handleSelectionChanged}>
         <option hidden>{title}</option>
         {options}
       </select>

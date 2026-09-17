@@ -7,14 +7,15 @@ import MoneySendSVG from '../assets/money-send.svg?react'
 import '../styles/components/HomeRegistries.css'
 import SelectCancelable from './SelectCancelable'
 import Table from './Table'
-import NewRegistryForm from './NewRegistryForm'
+import NewRegistryForm, { type NewRegistryFormData } from './NewRegistryForm'
 
 interface HomeRegistriesProps {
   yearMonth: string;
   onNext: (element:React.JSX.Element) => void;
+  onReturn: () => void;
 }
 
-export default function HomeRegistries({ yearMonth, onNext }:HomeRegistriesProps) {
+export default function HomeRegistries({ yearMonth, onNext, onReturn }:HomeRegistriesProps) {
   const [transactionsViewMode, setTransactionsViewMode] = useState('table');
   const [sumIn, setSumIn] = useState('R$ 0,00');
   const [sumOut, setSumOut] = useState('R$ 0,00');
@@ -59,8 +60,13 @@ export default function HomeRegistries({ yearMonth, onNext }:HomeRegistriesProps
     });
   };
 
+  const onSaveNewReg = (data:NewRegistryFormData) => {
+    console.log('save new reg', data);
+    onReturn();
+  };
+
   const handleNewReg = () => {
-    onNext(<NewRegistryForm />);
+    onNext(<NewRegistryForm onReturn={onReturn} onSave={onSaveNewReg} />);
   };
 
   if (yearMonth != refYearMonth.current) {
@@ -133,7 +139,7 @@ export default function HomeRegistries({ yearMonth, onNext }:HomeRegistriesProps
           <p title='saldo final'>{amount}</p>
         </div>
         <div className='v-line'/>
-        <SelectCancelable title='Cartão' values={cards} disabled={offlineMode} onChanged={c => {cardId.current = c; loadTransactions()}} />
+        <SelectCancelable title='Cartão' notStretch values={cards} disabled={offlineMode} onChanged={c => {cardId.current = c; loadTransactions()}} />
         <button className='btn btn-outline win-icon' onClick={handleNewReg}>&#xF8AA;</button>
         <div className='select-btn-group'>
           <button className={`btn win-icon ${transactionsViewMode == 'table' && 'btn-focus'}`} onClick={() => setTransactionsViewMode('table')}>&#xF2C7;</button>

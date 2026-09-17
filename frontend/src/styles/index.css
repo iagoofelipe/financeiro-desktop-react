@@ -171,8 +171,13 @@ input:disabled {
 
   transition: border-color .15s ease-in-out;
 
-  &[type=text], &[type=password], &.stretch {
+  &:not(.not-stretch) {
     width: stretch;
+  }
+
+  &[type=number]::-webkit-inner-spin-button,
+  &[type=number]::-webkit-outer-spin-button {
+    background-color: transparent;
   }
 }
 

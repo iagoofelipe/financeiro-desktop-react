@@ -1,5 +1,15 @@
 .new-reg-form {
   display: flex;
+  height: 100%;
   flex-direction: column;
   row-gap: var(--gap);
+
+  .foot {
+    margin: auto auto 0 auto;
+
+    button {
+      width: 200px;
+      margin-left: 10px;
+    }
+  }
 }

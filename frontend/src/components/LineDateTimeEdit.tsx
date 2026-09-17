@@ -7,11 +7,12 @@ interface LineDateTimeEditProps {
   value?: string;
   disabled?: boolean;
   typeMonth?: boolean;
+  notStretch?:boolean;
   onChange?: (value:string) => void;
   onReturnPressed?: () => void;
 }
 
-const getNow = (typeMonth?:boolean) => {
+export function getNow(typeMonth?:boolean) {
   const now = new Date();
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -24,7 +25,7 @@ const getNow = (typeMonth?:boolean) => {
   return `${year}-${month}-${day}T${hour}:${min}`;
 };
 
-export default function LineDateTimeEdit({label, value, disabled, typeMonth, onChange, onReturnPressed}:LineDateTimeEditProps) {
+export default function LineDateTimeEdit({label, value, disabled, typeMonth, notStretch, onChange, onReturnPressed}:LineDateTimeEditProps) {
   const [datetime, setDatetime] = useState(value ?? getNow(typeMonth));
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +44,7 @@ export default function LineDateTimeEdit({label, value, disabled, typeMonth, onC
   return (
     <div style={{width: '100%'}}>
       {label && <p className='line-edit-label'>{label}</p>}
-      <input type={typeMonth ? "month" : "datetime-local"} onKeyDown={handleKeyDown} onChange={handleChange} value={datetime} className="form-control stretch" disabled={disabled} />
+      <input type={typeMonth ? "month" : "datetime-local"} onKeyDown={handleKeyDown} onChange={handleChange} value={datetime} className={`form-control ${notStretch && 'not-stretch'}`} disabled={disabled} />
     </div>
   )
 }

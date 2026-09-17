@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from 'r
 import HomeDashboards from '../components/HomeDashboards'
 import HomeRegistries from '../components/HomeRegistries'
 import { useNavigate } from 'react-router-dom';
+import LineEdit from '../components/LineEdit';
 
 // interface NavElement {
 //   title:string;
@@ -107,7 +108,7 @@ export default function Home() {
       break;
 
     case 'Registros':
-      navContent = <HomeRegistries yearMonth={yearMonth} onNext={handleOnNext}/>;
+      navContent = <HomeRegistries yearMonth={yearMonth} onNext={handleOnNext} onReturn={() => setContentOverride(null)}/>;
       break;
 
     default:
@@ -138,10 +139,10 @@ export default function Home() {
       
       <div style={{display: 'flex', flexDirection: 'column', rowGap: 'var(--gap)', width: '100%'}}>
         <div className='card' style={{display:'flex', flexDirection: 'row', columnGap: 'var(--gap)', alignItems: 'center'}}>
-          <a className='title' style={{marginRight: 'auto', cursor: 'pointer'}} onClick={(e) => {}}>{navTitle}</a>
+          <a className='title' style={{marginRight: 'auto', cursor: 'pointer'}}>{navTitle}</a>
           <button disabled={offlineMode || true} className='btn btn-outline win-icon' onClick={handleSyncClicked}>&#xEDAB;</button>
           <button disabled={offlineMode} className='btn btn-outline win-icon'>&#xEDAC;</button>
-          <input disabled={offlineMode} type='month' className='form-control' value={yearMonth} onChange={(e:ChangeEvent<HTMLInputElement>) => { setYearMonth(e.target.value) }} />
+          <LineEdit disabled={offlineMode} notStretch type='month' value={yearMonth} onChange={setYearMonth} />
         </div>
         {content}
       </div>
