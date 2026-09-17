@@ -89,7 +89,7 @@ export default function Home() {
 
   switch (nav) {
     case 'Dashboards':
-      content = <HomeDashboards  />;
+      content = <HomeDashboards  yearMonth={yearMonth} />;
       break;
 
     case 'Registros':

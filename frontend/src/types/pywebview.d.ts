@@ -46,6 +46,14 @@ export interface RegistryData {
   installment_formatted: string;
 }
 
+export interface BalanceData {
+  total_in: number;
+  total_out: number;
+  prev_total_in: number;
+  prev_total_out: number;
+  total_amount: number;
+}
+
 export interface Response<T> {
   success:boolean;
   error:string;
@@ -62,6 +70,7 @@ export interface PyWebViewAPI {
   getDefaultYearMonth: () => Promise<string>;
   getCards: () => Promise<Response<CardData[]>>;
   getRegistries: (params:{yearMonth?:string, cardId?:number}) => Promise<Response<RegistryData[]>>;
+  getBalance: (params:{yearMonth?:string}) => Promise<Response<BalanceData>>;
 }
 
 declare global {

@@ -36,6 +36,11 @@ class JavaScriptAPI:
     if 'cardId' in params:
       params['card_id'] = params.pop('cardId')
     return self._model.request('GET', '/getRegistries', params=params)
+
+  def getBalance(self, params):
+    if 'yearMonth' in params:
+      params['date_ref'] = params.pop('yearMonth')+'-01'
+    return self._model.request('GET', '/balance', params=params)
   
   #-----------------------------------------------------
   # eventos
