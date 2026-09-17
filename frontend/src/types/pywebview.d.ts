@@ -65,7 +65,7 @@ export interface PyWebViewAPI {
   logout: () => Promise<void>;
   authenticate: (username: string, password: string, remember: boolean) => Promise<{success:boolean, error:string}>;
   isAuthenticated: () => Promise<boolean>;
-  createAccount: (data:CreateAccountData) => Promise<{success:boolean, error:string}>;
+  createAccount: (data:CreateAccountData) => Promise<Response<undefined>>;
   getUser: () => Promise<UserData|undefined>;
   getDefaultYearMonth: () => Promise<string>;
   getCards: () => Promise<Response<CardData[]>>;

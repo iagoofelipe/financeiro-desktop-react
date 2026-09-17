@@ -44,7 +44,7 @@ export default function CreateAccount() {
     }
 
     setBlockInputs(true);
-    const {success, error} = await window.pywebview.api.createAccount({
+    const response = await window.pywebview.api.createAccount({
       username: username,
       password: password,
       email: email,
@@ -52,15 +52,15 @@ export default function CreateAccount() {
       lastName: lastName,
     });
 
-    if (success) {
-      navigate("/");
+    if (response.success) {
+      navigate("/login");
       return;
     }
 
     setBlockInputs(false);
     addToast({
       title: 'Criação de conta',
-      message: error,
+      message: response.error,
       type: 'warning',
     });
   }
@@ -72,18 +72,18 @@ export default function CreateAccount() {
         <p className='subtitle' style={{ textAlign: 'center' }}>Seu controle financeiro em um só lugar</p>
         <LineEdit label='Usuário' disabled={blockInputs} onChange={(v) => setUsername(v)} />
         <div style={{display: 'flex', columnGap: '1rem'}}>
-          <LineEdit label='Senha' disabled={blockInputs} mask onChange={(v) => setPassword(v)} />
-          <LineEdit label='Confirmar Senha' disabled={blockInputs} mask onChange={(v) => setPasswordConfirm(v)} />
+          <LineEdit label='Senha' disabled={blockInputs} type="password" onChange={(v) => setPassword(v)} />
+          <LineEdit label='Confirmar Senha' disabled={blockInputs} type="password" onChange={(v) => setPasswordConfirm(v)} />
         </div>
         <LineEdit label='E-mail' disabled={blockInputs} onChange={(v) => setEmail(v)} />
         <div style={{display: 'flex', columnGap: '1rem'}}>
-          <LineEdit label='Primeiro Nome' disabled={blockInputs} mask onChange={(v) => setFirstName(v)} />
-          <LineEdit label='Último Nome' disabled={blockInputs} mask onChange={(v) => setLastName(v)} />
+          <LineEdit label='Primeiro Nome' disabled={blockInputs} onChange={(v) => setFirstName(v)} />
+          <LineEdit label='Último Nome' disabled={blockInputs} onChange={(v) => setLastName(v)} />
         </div>
-        <p style={{ color: 'var(--text-secondary)' }}>Já possui uma conta? <a onClick={() => navigate('/')} style={{ color: 'var(--text-secondary)' }}>acesse aqui</a></p>
+        <p style={{ color: 'var(--text-secondary)' }}>Já possui uma conta? <a onClick={() => navigate('/login')} style={{ color: 'var(--text-secondary)' }}>acesse aqui</a></p>
         <button className='btn btn-focus' disabled={blockInputs} onClick={on_click}>criar</button>
       </div>
-      <img src="/data-extraction.svg" />
+      <img src="/imgs/data-extraction.svg" />
     </div>
   )
 }

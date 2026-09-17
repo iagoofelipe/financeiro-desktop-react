@@ -7,12 +7,14 @@ import MoneySendSVG from '../assets/money-send.svg?react'
 import '../styles/components/HomeRegistries.css'
 import SelectCancelable from './SelectCancelable'
 import Table from './Table'
+import NewRegistryForm from './NewRegistryForm'
 
 interface HomeRegistriesProps {
   yearMonth: string;
+  onNext: (element:React.JSX.Element) => void;
 }
 
-export default function HomeRegistries({ yearMonth }:HomeRegistriesProps) {
+export default function HomeRegistries({ yearMonth, onNext }:HomeRegistriesProps) {
   const [transactionsViewMode, setTransactionsViewMode] = useState('table');
   const [sumIn, setSumIn] = useState('R$ 0,00');
   const [sumOut, setSumOut] = useState('R$ 0,00');
@@ -55,6 +57,10 @@ export default function HomeRegistries({ yearMonth }:HomeRegistriesProps) {
         ]
       }));
     });
+  };
+
+  const handleNewReg = () => {
+    onNext(<NewRegistryForm />);
   };
 
   if (yearMonth != refYearMonth.current) {
@@ -128,7 +134,7 @@ export default function HomeRegistries({ yearMonth }:HomeRegistriesProps) {
         </div>
         <div className='v-line'/>
         <SelectCancelable title='Cartão' values={cards} disabled={offlineMode} onChanged={c => {cardId.current = c; loadTransactions()}} />
-        <button className='btn btn-outline win-icon'>&#xF8AA;</button>
+        <button className='btn btn-outline win-icon' onClick={handleNewReg}>&#xF8AA;</button>
         <div className='select-btn-group'>
           <button className={`btn win-icon ${transactionsViewMode == 'table' && 'btn-focus'}`} onClick={() => setTransactionsViewMode('table')}>&#xF2C7;</button>
           <button className={`btn win-icon ${transactionsViewMode == 'grid' && 'btn-focus'}`} onClick={() => setTransactionsViewMode('grid')}>&#xE8A9;</button>

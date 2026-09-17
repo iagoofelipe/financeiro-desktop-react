@@ -65,7 +65,7 @@ export default function Login() {
         <p className='title-1' style={{ textAlign: 'center' }}>Financeiro</p>
         <p className='title-2' style={{ textAlign: 'center' }}>Seu controle financeiro em um só lugar</p>
         <LineEdit label='Usuário' disabled={blockInputs} onChange={(v) => setUsername(v)} />
-        <LineEdit label='Senha' disabled={blockInputs} mask onReturnPressed={onAuth} onChange={(v) => setPassword(v)} />
+        <LineEdit label='Senha' disabled={blockInputs} type='password' onReturnPressed={onAuth} onChange={(v) => setPassword(v)} />
         <p style={{ color: 'var(--text-secondary)' }}>Não possui uma conta? <a onClick={() => navigate('/createAccount')} style={{ color: 'var(--text-secondary)' }}>crie agora</a></p>
         <Checkbox label='Lembrar de mim' disabled={blockInputs} onChange={(v) => setRemember(v)} />
         <button className='btn btn-focus' disabled={blockInputs} onClick={onAuth}>acessar</button>

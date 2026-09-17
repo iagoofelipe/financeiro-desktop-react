@@ -19,12 +19,10 @@ class JavaScriptAPI:
   # métodos públicos
   def isAuthenticated(self) -> bool: return self._authenticated
 
-  def createAccount(self, data) -> tuple[bool, str]:
-    time.sleep(1)
-    if data['username'] == 'iago':
-      return dict(success=False, error='já existe um usuário com essas informações!')
-    else:
-      return dict(success=True, error='')
+  def createAccount(self, data):
+    data['first_name'] = data.pop('firstName')
+    data['last_name'] = data.pop('lastName')
+    return self._model.request('POST', '/createAccount', token=False, json_response=False, json=data)
 
   def getUser(self): return self._model.user
   def getDefaultYearMonth(self): return self._model.defaultYearMonth

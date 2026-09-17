@@ -130,7 +130,11 @@ class AppModel:
     result['success'] = response.status_code == 200
 
     if not result['success'] and detail_from_response:
-      result['error'] = response.json()['detail']
+      try:
+        result['error'] = response.json()['detail']
+      except:
+        result['error'] = f'não foi possível processar a solicitação (HttpCode={response.status_code})'
+
 
     if result['success'] and json_response:
       result['data'] = response.json()

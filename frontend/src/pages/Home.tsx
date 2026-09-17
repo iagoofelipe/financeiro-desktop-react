@@ -1,16 +1,24 @@
 import '../styles/pages/Home.css'
-import { useEffect, useRef, useState, type ChangeEvent } from 'react'
+import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from 'react'
 import HomeDashboards from '../components/HomeDashboards'
 import HomeRegistries from '../components/HomeRegistries'
 import { useNavigate } from 'react-router-dom';
 
+// interface NavElement {
+//   title:string;
+//   component:React.JSX.Element;
+// }
+
 export default function Home() {
   const navigate = useNavigate();
   const [navCollapsed, setNavCollapsed] = useState(false);
-  const [nav, setNav] = useState('Registros');
+  const [navTitle, setNavTitle] = useState('Registros');
+  // const [navElements, setNavElements] = useState<NavElement[]>([]);
+  // const [content, setContent] = useState<React.JSX.Element>(<div/>);
   const [user, setUser] = useState('Usuário');
   const [yearMonth, setYearMonth] = useState('');
   const [offlineMode, setOfflineMode] = useState(false);
+  const [contentOverride, setContentOverride] = useState<ReactNode>(null);
   const hasSyncedInitialData = useRef(false);
   const isMounted = useRef(false);
 
@@ -49,6 +57,7 @@ export default function Home() {
           return;
 
         setYearMonth(result);
+        console.log(`sync data yearMonth=${result}`)
       });
 
       setOfflineMode(false);
@@ -80,26 +89,33 @@ export default function Home() {
     navigate('/login');
   };
 
-  const handleNavClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setNav(e.currentTarget.name);
+  const handleOnNext = (element: React.JSX.Element) => {
+    setContentOverride(element);
   };
 
-  // definindo conteúdo principal
-  let content;
+  const handleNavClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setNavTitle(e.currentTarget.name);
+    setContentOverride(null);
+  };
 
-  switch (nav) {
+  // atualizando conteúdo principal
+  let navContent: React.JSX.Element;
+
+  switch (navTitle) {
     case 'Dashboards':
-      content = <HomeDashboards  yearMonth={yearMonth} />;
+      navContent = <HomeDashboards yearMonth={yearMonth}/>;
       break;
 
     case 'Registros':
-      content = <HomeRegistries yearMonth={yearMonth}/>;
+      navContent = <HomeRegistries yearMonth={yearMonth} onNext={handleOnNext}/>;
       break;
 
     default:
-      content = <div className='card' style={{height: '100%'}}></div>;
+      navContent = <div className='card' style={{height: '100%'}} />;
       break;
   }
+
+  const content = contentOverride ?? navContent;
 
   return (
     <div className='home-container'>
@@ -110,10 +126,10 @@ export default function Home() {
           <span onClick={() => {setNavCollapsed(!navCollapsed)}} className='win-icon' style={{cursor: 'pointer'}}>&#xE746;</span>
         </div>
         <div className='h-line h-line-overflow-parent' />
-        <button onClick={handleNavClick} name='Dashboards' className={`btn nav-btn ${nav == 'Dashboards' && 'btn-focus'}`}><span className='win-icon'>&#xECA5;</span><p hidden={navCollapsed}>Dashboards</p></button>
-        <button onClick={handleNavClick} name='Registros' className={`btn nav-btn ${nav == 'Registros' && 'btn-focus'}`}><span className='win-icon'>&#xE8A5;</span><p hidden={navCollapsed}>Registros</p></button>
-        <button onClick={handleNavClick} name='Cartões e Faturas' className={`btn nav-btn ${nav == 'Cartões e Faturas' && 'btn-focus'}`}><span className='win-icon'>&#xE8C7;</span><p hidden={navCollapsed}>Cartões e Faturas</p></button>
-        <button onClick={handleNavClick} name='Configurações' className={`btn nav-btn ${nav == 'Configurações' && 'btn-focus'}`}><span className='win-icon'>&#xE713;</span><p hidden={navCollapsed}>Configurações</p></button>
+        <button onClick={handleNavClick} name='Dashboards' className={`btn nav-btn ${navTitle == 'Dashboards' && 'btn-focus'}`}><span className='win-icon'>&#xECA5;</span><p hidden={navCollapsed}>Dashboards</p></button>
+        <button onClick={handleNavClick} name='Registros' className={`btn nav-btn ${navTitle == 'Registros' && 'btn-focus'}`}><span className='win-icon'>&#xE8A5;</span><p hidden={navCollapsed}>Registros</p></button>
+        <button onClick={handleNavClick} name='Cartões e Faturas' className={`btn nav-btn ${navTitle == 'Cartões e Faturas' && 'btn-focus'}`}><span className='win-icon'>&#xE8C7;</span><p hidden={navCollapsed}>Cartões e Faturas</p></button>
+        <button onClick={handleNavClick} name='Configurações' className={`btn nav-btn ${navTitle == 'Configurações' && 'btn-focus'}`}><span className='win-icon'>&#xE713;</span><p hidden={navCollapsed}>Configurações</p></button>
         <div style={{height: 'stretch'}}></div>
         <div className='h-line h-line-overflow-parent' />
         <button onClick={handleNavClick} name='user' className='btn nav-btn'><span className='win-icon'>&#xE77B;</span><p hidden={navCollapsed}>{user}</p></button>
@@ -122,7 +138,7 @@ export default function Home() {
       
       <div style={{display: 'flex', flexDirection: 'column', rowGap: 'var(--gap)', width: '100%'}}>
         <div className='card' style={{display:'flex', flexDirection: 'row', columnGap: 'var(--gap)', alignItems: 'center'}}>
-          <p className='title' style={{marginRight: 'auto'}}>{nav}</p>
+          <a className='title' style={{marginRight: 'auto', cursor: 'pointer'}} onClick={(e) => {}}>{navTitle}</a>
           <button disabled={offlineMode || true} className='btn btn-outline win-icon' onClick={handleSyncClicked}>&#xEDAB;</button>
           <button disabled={offlineMode} className='btn btn-outline win-icon'>&#xEDAC;</button>
           <input disabled={offlineMode} type='month' className='form-control' value={yearMonth} onChange={(e:ChangeEvent<HTMLInputElement>) => { setYearMonth(e.target.value) }} />
