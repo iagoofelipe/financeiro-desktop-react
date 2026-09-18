@@ -5,7 +5,9 @@
   row-gap: var(--gap);
 
   .foot {
-    margin: auto auto 0 auto;
+    margin-top: auto;
+    margin-left: auto;
+
 
     button {
       width: 200px;

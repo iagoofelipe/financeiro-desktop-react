@@ -1,9 +1,8 @@
 import '../styles/pages/Home.css'
-import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import HomeDashboards from '../components/HomeDashboards'
 import HomeRegistries from '../components/HomeRegistries'
 import { useNavigate } from 'react-router-dom';
-import LineEdit from '../components/LineEdit';
 
 // interface NavElement {
 //   title:string;
@@ -142,7 +141,7 @@ export default function Home() {
           <a className='title' style={{marginRight: 'auto', cursor: 'pointer'}}>{navTitle}</a>
           <button disabled={offlineMode || true} className='btn btn-outline win-icon' onClick={handleSyncClicked}>&#xEDAB;</button>
           <button disabled={offlineMode} className='btn btn-outline win-icon'>&#xEDAC;</button>
-          <LineEdit disabled={offlineMode} notStretch type='month' value={yearMonth} onChange={setYearMonth} />
+          <input disabled={offlineMode} className='form-control not-stretch' type='month' value={yearMonth} onChange={(e) => setYearMonth(e.target.value)} />
         </div>
         {content}
       </div>

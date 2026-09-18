@@ -1,7 +1,6 @@
 import '/src/styles/pages/Login.css'
 
 import { useState } from 'react'
-import LineEdit from '../components/LineEdit'
 import { useToast } from '../context/ToastContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -70,15 +69,33 @@ export default function CreateAccount() {
       <div className='card form'>
         <p className='title' style={{ textAlign: 'center' }}>Financeiro</p>
         <p className='subtitle' style={{ textAlign: 'center' }}>Seu controle financeiro em um só lugar</p>
-        <LineEdit label='Usuário' disabled={blockInputs} onChange={(v) => setUsername(v)} />
-        <div style={{display: 'flex', columnGap: '1rem'}}>
-          <LineEdit label='Senha' disabled={blockInputs} type="password" onChange={(v) => setPassword(v)} />
-          <LineEdit label='Confirmar Senha' disabled={blockInputs} type="password" onChange={(v) => setPasswordConfirm(v)} />
+        <div>
+          <p className='form-control-label'>Usuário</p>
+          <input className='form-control' disabled={blockInputs} onChange={(e) => setUsername(e.target.value)} />
         </div>
-        <LineEdit label='E-mail' disabled={blockInputs} onChange={(v) => setEmail(v)} />
         <div style={{display: 'flex', columnGap: '1rem'}}>
-          <LineEdit label='Primeiro Nome' disabled={blockInputs} onChange={(v) => setFirstName(v)} />
-          <LineEdit label='Último Nome' disabled={blockInputs} onChange={(v) => setLastName(v)} />
+          <div>
+          <p className='form-control-label'>Senha</p>
+            <input className='form-control' disabled={blockInputs} type="password" onChange={(e) => setPassword(e.target.value)} />
+          </div>
+          <div>
+          <p className='form-control-label'>Confirmar Senha</p>
+            <input className='form-control' disabled={blockInputs} type="password" onChange={(e) => setPasswordConfirm(e.target.value)} />
+          </div>
+        </div>
+        <div>
+          <p className='form-control-label'>E-mail</p>
+          <input className='form-control' disabled={blockInputs} onChange={(e) => setEmail(e.target.value)} />
+        </div>
+        <div style={{display: 'flex', columnGap: '1rem'}}>
+          <div>
+          <p className='form-control-label'>Primeiro Nome</p>
+            <input className='form-control' disabled={blockInputs} onChange={(e) => setFirstName(e.target.value)} />
+          </div>
+          <div>
+          <p className='form-control-label'>Último Nome</p>
+            <input className='form-control' disabled={blockInputs} onChange={(e) => setLastName(e.target.value)} />
+          </div>
         </div>
         <p style={{ color: 'var(--text-secondary)' }}>Já possui uma conta? <a onClick={() => navigate('/login')} style={{ color: 'var(--text-secondary)' }}>acesse aqui</a></p>
         <button className='btn btn-focus' disabled={blockInputs} onClick={on_click}>criar</button>

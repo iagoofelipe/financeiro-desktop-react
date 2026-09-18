@@ -1,8 +1,7 @@
 import type { ChangeEvent, KeyboardEvent } from 'react';
 import { useState } from "react";
-import '/src/styles/components/LineEdit.css'
 
-interface LineDateTimeEditProps {
+interface DateTimeEditProps {
   label?: string;
   value?: string;
   disabled?: boolean;
@@ -25,7 +24,7 @@ export function getNow(typeMonth?:boolean) {
   return `${year}-${month}-${day}T${hour}:${min}`;
 };
 
-export default function LineDateTimeEdit({label, value, disabled, typeMonth, notStretch, onChange, onReturnPressed}:LineDateTimeEditProps) {
+export default function DateTimeEdit({label, value, disabled, typeMonth, notStretch, onChange, onReturnPressed}:DateTimeEditProps) {
   const [datetime, setDatetime] = useState(value ?? getNow(typeMonth));
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +42,7 @@ export default function LineDateTimeEdit({label, value, disabled, typeMonth, not
   
   return (
     <div style={{width: '100%'}}>
-      {label && <p className='line-edit-label'>{label}</p>}
+      {label && <p className='form-control-label'>{label}</p>}
       <input type={typeMonth ? "month" : "datetime-local"} onKeyDown={handleKeyDown} onChange={handleChange} value={datetime} className={`form-control ${notStretch && 'not-stretch'}`} disabled={disabled} />
     </div>
   )

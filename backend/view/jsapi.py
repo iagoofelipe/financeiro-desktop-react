@@ -39,6 +39,9 @@ class JavaScriptAPI:
     if 'yearMonth' in params:
       params['date_ref'] = params.pop('yearMonth')+'-01'
     return self._model.request('GET', '/balance', params=params)
+
+  def getSuggestionCategories(self):
+    return self._model.request('GET', '/getSuggestionCategories')
   
   #-----------------------------------------------------
   # eventos

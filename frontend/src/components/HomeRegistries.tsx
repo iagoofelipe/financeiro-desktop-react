@@ -66,7 +66,7 @@ export default function HomeRegistries({ yearMonth, onNext, onReturn }:HomeRegis
   };
 
   const handleNewReg = () => {
-    onNext(<NewRegistryForm onReturn={onReturn} onSave={onSaveNewReg} />);
+    onNext(<NewRegistryForm yearMonth={yearMonth} onReturn={onReturn} onSave={onSaveNewReg} />);
   };
 
   if (yearMonth != refYearMonth.current) {

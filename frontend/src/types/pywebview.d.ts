@@ -71,6 +71,7 @@ export interface PyWebViewAPI {
   getCards: () => Promise<Response<CardData[]>>;
   getRegistries: (params:{yearMonth?:string, cardId?:number}) => Promise<Response<RegistryData[]>>;
   getBalance: (params:{yearMonth?:string}) => Promise<Response<BalanceData>>;
+  getSuggestionCategories: () => Promise<Response<string[]>>;
 }
 
 declare global {
