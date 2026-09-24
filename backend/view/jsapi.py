@@ -6,6 +6,7 @@ from backend.model.consts import *
 class JavaScriptAPI:
   def __init__(self):
     self._authenticated = False
+    self._cache = {}
     self._model = AppModel.getInstance()
 
     self._model.events.bind(EVT_USER_AUTHENTICATED, self.on_model_userAuthenticated)
@@ -26,25 +27,35 @@ class JavaScriptAPI:
 
   def getUser(self): return self._model.user
   def getDefaultYearMonth(self): return self._model.defaultYearMonth
-  def getCards(self): return self._model.request('GET', '/getCards')
+
+  def getCards(self):
+    # return self._model.request(method='GET', endpoint='/getCards')
+    return self._save_cache(endpoint='/getCards')
 
   def getRegistries(self, params):
     if 'yearMonth' in params:
       params['date_ref'] = params.pop('yearMonth')+'-01'
     if 'cardId' in params:
       params['card_id'] = params.pop('cardId')
-    return self._model.request('GET', '/getRegistries', params=params)
+    return self._save_cache('/getRegistries', params=params)
 
   def getBalance(self, params):
     if 'yearMonth' in params:
       params['date_ref'] = params.pop('yearMonth')+'-01'
-    return self._model.request('GET', '/balance', params=params)
+    return self._save_cache('/balance', params=params)
 
   def getSuggestionCategories(self):
-    return self._model.request('GET', '/getSuggestionCategories')
+    return self._save_cache('/getSuggestionCategories')
 
   def deleteRegistryById(self, id):
     return self._model.request('POST', f'/deleteRegistry/{id}', json_response=False)
+
+  def getResponsables(self):
+    return self._save_cache('/getResponsables')
+
+  def clearCache(self):
+    self._cache.clear()
+
   #-----------------------------------------------------
   # eventos
   def on_model_userAuthenticated(self):
@@ -52,5 +63,17 @@ class JavaScriptAPI:
 
   def on_model_userLoggedOut(self):
     self._authenticated = False
+    self._cache.clear()
   
   #-----------------------------------------------------
+  # métodos privados
+  def _save_cache(self, endpoint:str, **kwargs):
+    if endpoint not in self._cache or self._cache[endpoint]['kwargs'] != kwargs:
+      self._cache[endpoint] = {
+        'response': self._model.request('GET', endpoint, **kwargs),
+        'kwargs': kwargs,
+      }
+    return self._cache[endpoint]['response']
+
+  #-----------------------------------------------------
+  

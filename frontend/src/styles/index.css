@@ -254,6 +254,6 @@ select.form-control {
   text-align: center;
 }
 
-div[hidden] {
+div[hidden], button[hidden] {
   display: none !important;
 }

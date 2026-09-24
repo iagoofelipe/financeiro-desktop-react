@@ -10,37 +10,38 @@
 
 .toast {
   min-width: 280px;
-  max-width: 380px;
-  padding: 12px 16px;
+  max-width: 450px;
+  padding: 10px;
   border-radius: 6px;
-  /* background-color: #222; */
   color: var(--text);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  /* font-family: system-ui, -apple-system, sans-serif; */
   animation: slideIn 0.2s ease-out;
+  background-color: var(--bg);
 }
 
 .toast-content strong {
   display: block;
-  /* font-size: 0.9rem; */
   font-weight: bold;
   margin-bottom: 4px;
 }
 
 .toast-content p {
-  /* margin: 0; */
-  /* font-size: 0.85rem; */
-  opacity: 0.9;
+  color: var(--text-secondary);
+}
+
+.toast-icon {
+  margin: auto 10px auto 0;
+  font-size: 25pt;
 }
 
 .toast-close {
   background: transparent;
   border: none;
   color: inherit;
-  font-size: 1.1rem;
+  font-size: 16pt;
   cursor: pointer;
   line-height: 1;
   padding: 0 0 0 12px;
@@ -51,11 +52,57 @@
   opacity: 1;
 }
 
-/* Variantes de Cor */
-.toast-success { background-color: #198755; }
-.toast-danger { background-color: #dc35464d; }
-.toast-warning { background-color: #ffbf008e; }
-.toast-info { background-color: #0dcaf063; }
+.toast-success {
+  background: rgb(203, 255, 232);
+  border: 1px solid rgb(25, 135, 85);
+
+  .toast-icon { color: rgb(25, 135, 85); }
+}
+.toast-danger {
+  background: rgb(255, 179, 179);
+  border: 1px solid rgb(168, 28, 28);
+
+  .toast-icon { color: rgb(168, 28, 28); }
+}
+.toast-warning {
+  background: rgb(255, 242, 204);
+  border: 1px solid rgb(255, 191, 0);
+
+  .toast-icon { color: rgb(255, 191, 0); }
+}
+.toast-info {
+  background: rgb(211, 248, 255);
+  border: 1px solid rgb(13, 202, 240);
+
+  .toast-icon { color: rgb(13, 202, 240); }
+}
+
+@media (prefers-color-scheme: dark) {
+  .toast-success {
+    background: rgb(2, 63, 36);
+    border: 1px solid rgb(25, 135, 85);
+
+    .toast-icon { color: rgb(25, 135, 85); }
+  }
+  .toast-danger {
+    background: rgb(68, 5, 5);
+    border: 1px solid rgb(168, 28, 28);
+
+    .toast-icon { color: rgb(168, 28, 28); }
+  }
+  .toast-warning {
+    background: rgb(73, 56, 4);
+    border: 1px solid rgb(255, 191, 0);
+
+    .toast-icon { color: rgb(255, 191, 0); }
+  }
+  .toast-info {
+    background: rgb(3, 61, 73);
+    border: 1px solid rgb(13, 202, 240);
+
+    .toast-icon { color: rgb(13, 202, 240); }
+  }
+}
 
 @keyframes slideIn {
   from {

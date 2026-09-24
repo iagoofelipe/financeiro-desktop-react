@@ -14,6 +14,13 @@ interface ToastContextType {
   removeToast: (id: string) => void;
 }
 
+const ICON_BY_TYPE = {
+  'success': <span className='toast-icon win-icon'>&#xe73e;</span>,
+  'danger': <span className='toast-icon win-icon'>&#xe894;</span>,
+  'warning': <span className='toast-icon win-icon'>&#xe7ba;</span>,
+  'info': <span className='toast-icon win-icon'>&#xe946;</span>,
+}
+
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 export function ToastProvider({ children }: { children: ReactNode }) {
@@ -46,6 +53,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       <div className="toast-container">
         {toasts.map((toast) => (
           <div key={toast.id} className={`toast toast-${toast.type}`}>
+            {ICON_BY_TYPE[toast.type ?? 'info']}
             <div className="toast-content">
               {toast.title && <strong>{toast.title}</strong>}
               <p>{toast.message}</p>

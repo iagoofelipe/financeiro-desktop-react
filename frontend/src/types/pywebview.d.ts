@@ -15,6 +15,11 @@ export interface UserData {
   fullName: string;
 }
 
+export interface ResponsableData {
+  id: number;
+  name: string;
+}
+
 export interface ConnectionRestoredData {
   authenticationRequired: boolean;
 }
@@ -72,6 +77,8 @@ export interface PyWebViewAPI {
   getBalance: (params:{yearMonth?:string}) => Promise<Response<BalanceData>>;
   getSuggestionCategories: () => Promise<Response<string[]>>;
   deleteRegistryById: (id:number) => Promise<Response<null>>;
+  getResponsables: () => Promise<Response<ResponsableData[]>>;
+  clearCache: () => Promise<void>;
 }
 
 declare global {

@@ -14,6 +14,7 @@ import DialogConfirm from './DialogConfirm'
 
 interface HomeRegistriesProps {
   yearMonth: string;
+  syncTriggerCount?: number;
   onNext: (element:ReactNode) => void;
   onReturn: () => void;
 }
@@ -25,16 +26,10 @@ const STATUS_BY_NAME = {
   OK: 'Pago',
 }
 
-// interface DialogConfirmacaoProps {
-//   titulo: string;
-//   mensagem: string;
-//   aoConfirmar: () => void;
-// }
-
 const ICON_TRANSACTION_IN = <MoneyReciveSVG title='Entrada' height='25' width='25' style={{color: 'var(--success-color)'}}/>;
 const ICON_TRANSACTION_OUT = <MoneySendSVG title='Saída' height='25' width='25' style={{color: 'var(--fail-color)'}}/>;
 
-export default function HomeRegistries({ yearMonth, onNext, onReturn }:HomeRegistriesProps) {
+export default function HomeRegistries({ yearMonth, syncTriggerCount, onNext, onReturn }:HomeRegistriesProps) {
   const [transactionsViewMode, setTransactionsViewMode] = useState('table');
   const [sumIn, setSumIn] = useState('R$ 0,00');
   const [sumOut, setSumOut] = useState('R$ 0,00');
@@ -49,7 +44,7 @@ export default function HomeRegistries({ yearMonth, onNext, onReturn }:HomeRegis
   const [indexRowSelected, setIndexRowSelected] = useState<number>();
   const hasSyncedInitialData = useRef(false);
   const cardId = useRef('');
-  const refYearMonth = useRef('');
+  const refYearMonth = useRef(yearMonth);
   const { addToast } = useToast();
 
   // Modal
@@ -103,69 +98,73 @@ export default function HomeRegistries({ yearMonth, onNext, onReturn }:HomeRegis
     setIndexRowSelected(undefined);
   };
 
-  const loadTransactions = () => {
-    window.pywebview?.api.getRegistries({yearMonth, cardId: cardId.current? parseInt(cardId.current) : undefined}).then((result) => {
-      if (!result.success || !result.data)
-        return;
+  const loadTransactions = async () => {
+    if (!window.pywebview?.api.getRegistries || !yearMonth)
+      return;
 
-      let _sumIn = 0, _sumOut = 0, _amount = 0;
+    console.log('loading transactions');
+    
+    const response = await window.pywebview.api.getRegistries({yearMonth, cardId: cardId.current? parseInt(cardId.current) : undefined});
+    if (!response.success || !response.data)
+      return;
 
-      result.data.forEach(reg => {
-        if (reg.type_in)
-          _sumIn += reg.value;
-        else
-          _sumOut += reg.value;
-      });
-
-      setSumIn('R$ ' + _sumIn.toLocaleString('BRL'));
-      setSumOut('R$ ' + _sumOut.toLocaleString('BRL'));
-      setAmount('R$ ' + (_amount = _sumIn - _sumOut).toLocaleString('BRL'));
-      setPositiveAmount(_amount >= 0);
-      setNumTransactions(result.data.length);
-      setTransactionsData(result.data);
-
-      // limpando cache
-      clearTransactionSelection();
-
-      setTransactionsNode(result.data.map(reg => {
-        return [
-          reg.type_in? ICON_TRANSACTION_IN : ICON_TRANSACTION_OUT,
-          reg.title + (reg.installment_formatted? ` (${reg.installment_formatted})` : ''),
-          'R$ ' + reg.value.toLocaleString('BRL'),
-          <span className={'transaction-status transaction-status-'+reg.status.toLowerCase()}>{STATUS_BY_NAME[reg.status]}</span>,
-          reg.occurrence_formatted,
-          reg.responsable_name,
-          reg.card_name,
-        ]
-      }));
+    let _sumIn = 0, _sumOut = 0, _amount = 0;
+    response.data.forEach(reg => {
+      if (reg.type_in)
+        _sumIn += reg.value;
+      else
+        _sumOut += reg.value;
     });
+
+    setSumIn('R$ ' + _sumIn.toLocaleString('BRL'));
+    setSumOut('R$ ' + _sumOut.toLocaleString('BRL'));
+    setAmount('R$ ' + (_amount = _sumIn - _sumOut).toLocaleString('BRL'));
+    setPositiveAmount(_amount >= 0);
+    setNumTransactions(response.data.length);
+    setTransactionsData(response.data);
+
+    // limpando cache
+    clearTransactionSelection();
+
+    setTransactionsNode(response.data.map(reg => {
+      return [
+        reg.type_in? ICON_TRANSACTION_IN : ICON_TRANSACTION_OUT,
+        reg.title + (reg.installment_formatted? ` (${reg.installment_formatted})` : ''),
+        'R$ ' + reg.value.toLocaleString('BRL'),
+        <span className={'transaction-status transaction-status-'+reg.status.toLowerCase()}>{STATUS_BY_NAME[reg.status]}</span>,
+        reg.occurrence_formatted,
+        reg.responsable_name,
+        reg.card_name,
+      ]
+    }));
   };
   
   if (yearMonth != refYearMonth.current) {
-    // console.log('change refYear from', refYearMonth.current, 'to', yearMonth);
+    console.log(`change refYear from "${refYearMonth.current}" to "${yearMonth}"`);
     refYearMonth.current = yearMonth;
     loadTransactions();
   }
   
   useEffect(() => {
     // dados iniciais
-    const syncData = () => {
-      if (hasSyncedInitialData.current)
+    const syncData = async () => {
+      if (!window.pywebview || (hasSyncedInitialData.current && syncTriggerCount == 0))
         return;
-
+      
+      console.log('HomeRegistries useEffect sync');
       hasSyncedInitialData.current = true;
       setOfflineMode(true);
 
-      window.pywebview?.api.getCards().then((response) => {
-        if (!response.success || !response.data)
-          return;
+      const response = await window.pywebview.api.getCards();
+      if (!response.success || !response.data)
+        return;
+      
+      console.log('HomeRegistries setCards');
+      setCards(
+        response.data.map(v => { return {value: v.id.toString(), text: v.name} })
+      );
 
-        console.log('HomeRegistries setCards');
-        setCards(response.data.map(v => {
-          return {value: v.id.toString(), text: v.name};
-        }));
-      });
-
+      await loadTransactions();
       setOfflineMode(false);
     };
 
@@ -187,7 +186,7 @@ export default function HomeRegistries({ yearMonth, onNext, onReturn }:HomeRegis
       window.removeEventListener('connection-broken', onConnectionBroken);
       window.removeEventListener('connection-restored', onConnectionRestored);
     };
-  }, []);
+  }, [syncTriggerCount]);
 
   const transactionsContent = transactionsViewMode == 'table'?
     <Table columns={['Tipo', 'Título', 'Valor', 'Status', 'Ocorrência', 'Responsável', 'Cartão']} indexRowSelected={indexRowSelected} selectable hiddenIndexColumns={cardId.current? [6] : undefined} onRowSelected={handleTableTransactionsRowSelected} values={transactionsNode}/> :
@@ -213,7 +212,7 @@ export default function HomeRegistries({ yearMonth, onNext, onReturn }:HomeRegis
             <p title='saldo final'>{amount}</p>
           </div>
           <div className='v-line'/>
-          <SelectCancelable title='Cartão' notStretch values={cards} disabled={offlineMode} onChanged={c => {cardId.current = c; loadTransactions()}} />
+          <SelectCancelable title='Cartão' notStretch values={cards} disabled={offlineMode} onChanged={async c => {cardId.current = c; await loadTransactions()}} />
           <button className='btn btn-outline win-icon' onClick={handleNewReg}>&#xF8AA;</button>
           <div className='select-btn-group'>
             <button className={`btn win-icon ${transactionsViewMode == 'table' && 'btn-focus'}`} onClick={() => setTransactionsViewMode('table')}>&#xF2C7;</button>

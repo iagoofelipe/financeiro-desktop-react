@@ -7,7 +7,7 @@ interface HomeDashboardsProps {
 export default function HomeDashboards({ yearMonth }:HomeDashboardsProps) {
   const hasSyncedInitialData = useRef(false);
   const [content, setContent] = useState('');
-  const refYearMonth = useRef('');
+  const refYearMonth = useRef(yearMonth);
 
   const loadBalance = () => {
     window.pywebview?.api.getBalance({yearMonth}).then((response) => {
@@ -19,7 +19,7 @@ export default function HomeDashboards({ yearMonth }:HomeDashboardsProps) {
   };
 
   if (yearMonth != refYearMonth.current) {
-    console.log('change refYear from', refYearMonth.current, 'to', yearMonth);
+    console.log(`change refYear NAV-DASH from "${refYearMonth.current}" to "${yearMonth}"`);
     refYearMonth.current = yearMonth;
     loadBalance();
   }
@@ -34,7 +34,7 @@ export default function HomeDashboards({ yearMonth }:HomeDashboardsProps) {
       loadBalance();
     };
 
-    if (window.pywebview?.api.getCards)
+    if (window.pywebview?.api.getBalance)
       syncData();
     else
       window.addEventListener('pywebviewready', syncData);

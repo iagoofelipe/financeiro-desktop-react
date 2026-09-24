@@ -4,63 +4,60 @@ import HomeDashboards from '../components/HomeDashboards'
 import HomeRegistries from '../components/HomeRegistries'
 import { useNavigate } from 'react-router-dom';
 
-// interface NavElement {
-//   title:string;
-//   component:React.JSX.Element;
-// }
-
 export default function Home() {
   const navigate = useNavigate();
   const [navCollapsed, setNavCollapsed] = useState(false);
   const [navTitle, setNavTitle] = useState('Registros');
-  // const [navElements, setNavElements] = useState<NavElement[]>([]);
-  // const [content, setContent] = useState<React.JSX.Element>(<div/>);
   const [user, setUser] = useState('Usuário');
   const [yearMonth, setYearMonth] = useState('');
   const [offlineMode, setOfflineMode] = useState(false);
   const [contentOverride, setContentOverride] = useState<ReactNode>(null);
   const hasSyncedInitialData = useRef(false);
-  const isMounted = useRef(false);
+  const [syncTriggerCount, setSyncTriggerCount] = useState(0);
+  const [intervalId, setIntervalId] = useState<number>();
+  const [lastUpdate, setLastUpdate] = useState(0);
+  // const isMounted = useRef(false);
 
-  const handleSyncClicked = async () => {
-    setOfflineMode(true);
-
-    if (!window.pywebview?.api)
-      return;
-
-    const user = await window.pywebview.api.getUser();
-    
-    setUser(user? user.fullName : '');
-    setOfflineMode(false);
+  const resetTimer = () => {
+    clearInterval(intervalId); // remove caso já exista um timer ativo
+    setLastUpdate(0);
+    setIntervalId(setInterval(() => {
+      setLastUpdate(p => p+1);
+    }, 60000));
   };
 
+  const handleSyncClicked = async () => {
+    // setOfflineMode(true);
+    
+    if (!window.pywebview?.api)
+      return;
+    
+    await window.pywebview.api.clearCache();
+    setSyncTriggerCount(p => p+1);
+    resetTimer();
+    // setOfflineMode(false);
+  };
+  
   useEffect(() => {
-    isMounted.current = true;
+    // isMounted.current = true;
 
     // dados iniciais
-    const syncData = () => {
-      if (hasSyncedInitialData.current)
+    const syncData = async () => {
+      if (hasSyncedInitialData.current || !window.pywebview)
         return;
+
+      
 
       hasSyncedInitialData.current = true;
       setOfflineMode(true);
 
-      window.pywebview?.api.getUser().then((result) => {
-        if (!isMounted.current || !result)
-          return;
+      const response_user = await window.pywebview.api.getUser();
+      if (response_user) setUser(response_user.fullName);
 
-        setUser(result.fullName);
-      });
-
-      window.pywebview?.api.getDefaultYearMonth().then((result) => {
-        if (!isMounted.current || yearMonth)
-          return;
-
-        setYearMonth(result);
-        console.log(`sync data yearMonth=${result}`)
-      });
-
+      if (!yearMonth) setYearMonth(await window.pywebview.api.getDefaultYearMonth());
+      
       setOfflineMode(false);
+      resetTimer();
     };
 
     if (window.pywebview?.api.getDefaultYearMonth)
@@ -77,7 +74,8 @@ export default function Home() {
 
     // cleanup
     return () => {
-      isMounted.current = false;
+      // isMounted.current = false;
+      clearInterval(intervalId);
       window.removeEventListener('pywebviewready', syncData);
       window.removeEventListener('connection-broken', onConnectionBroken);
       window.removeEventListener('connection-restored', onConnectionRestored);
@@ -89,7 +87,7 @@ export default function Home() {
     navigate('/login');
   };
 
-  const handleOnNext = (element: React.JSX.Element) => {
+  const handleOnNext = (element: ReactNode) => {
     setContentOverride(element);
   };
 
@@ -99,7 +97,7 @@ export default function Home() {
   };
 
   // atualizando conteúdo principal
-  let navContent: React.JSX.Element;
+  let navContent: ReactNode;
 
   switch (navTitle) {
     case 'Dashboards':
@@ -107,7 +105,7 @@ export default function Home() {
       break;
 
     case 'Registros':
-      navContent = <HomeRegistries yearMonth={yearMonth} onNext={handleOnNext} onReturn={() => setContentOverride(null)}/>;
+      navContent = <HomeRegistries syncTriggerCount={syncTriggerCount} yearMonth={yearMonth} onNext={handleOnNext} onReturn={() => setContentOverride(null)}/>;
       break;
 
     default:
@@ -116,6 +114,19 @@ export default function Home() {
   }
 
   const content = contentOverride ?? navContent;
+  let lastUpdateMessage: string;
+
+  if (lastUpdate <= 1)
+    lastUpdateMessage = 'atualizado há poucos segundos';
+  else if (lastUpdate < 60)
+    lastUpdateMessage = `atualizado há ${lastUpdate} minutos`;
+  else {
+    if (intervalId) {
+      clearInterval(intervalId);
+      setIntervalId(undefined);
+    }
+    lastUpdateMessage = `atualizado há mais de 1 hora`;
+  }
 
   return (
     <div className='home-container'>
@@ -139,7 +150,8 @@ export default function Home() {
       <div style={{display: 'flex', flexDirection: 'column', rowGap: 'var(--gap)', width: '100%'}}>
         <div className='card' style={{display:'flex', flexDirection: 'row', columnGap: 'var(--gap)', alignItems: 'center'}}>
           <a className='title' style={{marginRight: 'auto', cursor: 'pointer'}}>{navTitle}</a>
-          <button disabled={offlineMode || true} className='btn btn-outline win-icon' onClick={handleSyncClicked}>&#xEDAB;</button>
+          <p style={{color: 'var(--text-secondary)'}}>{lastUpdateMessage}</p>
+          <button disabled={offlineMode} className='btn btn-outline win-icon' onClick={handleSyncClicked}>&#xEDAB;</button>
           <button disabled={offlineMode} className='btn btn-outline win-icon'>&#xEDAC;</button>
           <input disabled={offlineMode} className='form-control not-stretch' type='month' value={yearMonth} onChange={(e) => setYearMonth(e.target.value)} />
         </div>
