@@ -38,3 +38,47 @@
     color: var(--text-secondary);
   }
 }
+
+.transaction-status {
+  padding: 10px;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+}
+
+.transaction-status-late {
+  color: rgb(236, 28, 28);
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+.transaction-status-accounted {
+  color: rgb(57, 101, 224);
+  background-color: rgba(57, 101, 224, 0.1);
+}
+
+.transaction-status-pending {
+  color: rgb(255, 115, 0);
+  background-color: rgba(255, 115, 0, 0.1);
+}
+
+.transaction-status-ok {
+  color: rgb(66, 161, 37);
+  background-color: rgba(81, 255, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  .transaction-status-late {
+    background-color: rgba(255, 0, 0, 0.1);
+  }
+
+  .transaction-status-accounted {
+    background-color: rgba(57, 101, 224, 0.1);
+  }
+
+  .transaction-status-pending {
+    background-color: rgba(255, 115, 0, 0.1);
+  }
+
+  .transaction-status-ok {
+    background-color: rgba(81, 255, 0, 0.1);
+  }
+}

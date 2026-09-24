@@ -1,50 +1,55 @@
-import type { ReactNode } from 'react';
+import React, { useEffect, useState, type ReactNode } from 'react';
 import '../styles/components/Table.css'
 
 interface TableProps {
   columns: string[];
-  hiddenColumns?: string[];
   values: ReactNode[][];
+  hiddenIndexColumns?: number[];
+  selectable?: boolean;
+  indexRowSelected?: number;
+  onRowSelected?: (index?:number) => void;
 }
 
-export default function Table({ columns, values, hiddenColumns }:TableProps) {
-  let row_index = 0, item_key = 0;
-  // let cols = [];
+export default function Table({ columns, values, hiddenIndexColumns, selectable, indexRowSelected, onRowSelected }:TableProps) {
+  // const [indexRowSelected, setIndexRowSelected] = useState<number>();
 
-  // for (let row=0; row<columns.length; row++) {
-  //   cols.push(
-  //     <
-  //   );
-  // }
+  // useEffect(() => {
+  //   indexRowSelected != undefined && onRowSelected && onRowSelected();
+  //   setIndexRowSelected(undefined);
+  // }, [values]);
 
-  let values_formatted = [];
+  const handleRowClicked = (e:React.MouseEvent<HTMLTableRowElement, MouseEvent>) => {
+    if (!selectable)
+      return;
 
-  for (let row=0; row<values.length; row++) {
-    let cols = [];
-    for (let col=0; col<columns.length; col++) {
-      cols.push(col < values[row].length && values[row][col]);
-    }
-    values_formatted.push(cols);
-  }
+    const rowIndex = e.currentTarget.ariaRowIndex? Number(e.currentTarget.ariaRowIndex) : undefined;
+    // setIndexRowSelected(rowIndex);
+    onRowSelected && onRowSelected(rowIndex);
+  };
 
   return (
-    <table className="table">
+    <table className={`table ${selectable && 'table-selectable'}`}>
 
       <thead>
         <tr>
           {
-            columns.map((col) => {
-              return <th key={col} scope="col" hidden={hiddenColumns && hiddenColumns.includes(col)}>{col}</th>;
+            columns.map((col, index) => {
+              return <th key={col} scope="col" hidden={hiddenIndexColumns && hiddenIndexColumns.includes(index)}>{col}</th>;
             })
           }
         </tr>
       </thead>
       <tbody>
         {
-          values_formatted.map((row) => {
-            return <tr key={++row_index}>
-              {row.map((col) => {
-                return <td key={++item_key}>{col}</td>;
+          values.map((row, row_index) => {
+            return <tr key={row_index} aria-rowindex={row_index} onClick={handleRowClicked} className={(indexRowSelected === row_index)? 'selected' : ''}>
+              {row.map((col, col_index) => {
+                return <td
+                    key={`${row_index}-${col_index}`}
+                    aria-rowindex={row_index}
+                    aria-colindex={col_index}
+                    hidden={hiddenIndexColumns && hiddenIndexColumns.includes(col_index)}
+                  >{col}</td>;
               })}
             </tr>;
           })

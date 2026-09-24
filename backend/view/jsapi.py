@@ -42,7 +42,9 @@ class JavaScriptAPI:
 
   def getSuggestionCategories(self):
     return self._model.request('GET', '/getSuggestionCategories')
-  
+
+  def deleteRegistryById(self, id):
+    return self._model.request('POST', f'/deleteRegistry/{id}', json_response=False)
   #-----------------------------------------------------
   # eventos
   def on_model_userAuthenticated(self):

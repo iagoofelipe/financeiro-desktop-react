@@ -110,7 +110,7 @@ export default function NewRegistryForm({ data, yearMonth, onReturn, onSave }:Ne
       </div>
 
       <div className="foot">
-        <button className="btn btn-outline btn-focus" onClick={onReturn}>Voltar</button>
+        <button className="btn btn-outline" onClick={onReturn}>Voltar</button>
         <button className="btn btn-outline btn-focus" onClick={handleSave}>Salvar</button>
       </div>
     </div>

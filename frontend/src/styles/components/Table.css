@@ -1,7 +1,5 @@
 .table {
   width: 100%;
-  /* border-radius: var(--border-radius); */
-  /* border: 1px solid var(--border-color); */
   border-spacing: 0;
   
   thead th {
@@ -22,21 +20,23 @@
     color: var(--text-secondary);
   }
 
-  /* tbody {
-    display: block;
-    max-height: 200px;
-    overflow-y: auto;
+  tr:first-child td {
+    border-top: 1px solid var(--border-color);
   }
-
-  thead, tbody tr {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-  } */
 
   thead th {
     position: sticky;
-    top: 74px;
+    top: 0;
     z-index: 9;
+  }
+}
+
+.table-selectable {
+  tr:hover, tr.selected {
+    background-color: var(--bg-tertiary);
+  }
+
+  td {
+    cursor: pointer;
   }
 }

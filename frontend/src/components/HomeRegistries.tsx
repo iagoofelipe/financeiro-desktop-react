@@ -5,15 +5,34 @@ import MoneyReciveSVG from '../assets/money-recive.svg?react'
 import MoneySendSVG from '../assets/money-send.svg?react'
 
 import '../styles/components/HomeRegistries.css'
+import { useToast } from '../context/ToastContext';
 import SelectCancelable from './SelectCancelable'
 import Table from './Table'
 import NewRegistryForm, { type NewRegistryFormData } from './NewRegistryForm'
+import type { RegistryData } from '../types/pywebview'
+import DialogConfirm from './DialogConfirm'
 
 interface HomeRegistriesProps {
   yearMonth: string;
-  onNext: (element:React.JSX.Element) => void;
+  onNext: (element:ReactNode) => void;
   onReturn: () => void;
 }
+
+const STATUS_BY_NAME = {
+  PENDING: 'Pendente',
+  LATE: 'Atrasado',
+  ACCOUNTED: 'Contabilizado',
+  OK: 'Pago',
+}
+
+// interface DialogConfirmacaoProps {
+//   titulo: string;
+//   mensagem: string;
+//   aoConfirmar: () => void;
+// }
+
+const ICON_TRANSACTION_IN = <MoneyReciveSVG title='Entrada' height='25' width='25' style={{color: 'var(--success-color)'}}/>;
+const ICON_TRANSACTION_OUT = <MoneySendSVG title='Saída' height='25' width='25' style={{color: 'var(--fail-color)'}}/>;
 
 export default function HomeRegistries({ yearMonth, onNext, onReturn }:HomeRegistriesProps) {
   const [transactionsViewMode, setTransactionsViewMode] = useState('table');
@@ -22,11 +41,67 @@ export default function HomeRegistries({ yearMonth, onNext, onReturn }:HomeRegis
   const [amount, setAmount] = useState('R$ 0,00');
   const [positiveAmount, setPositiveAmount] = useState(true);
   const [cards, setCards] = useState<{value:string, text:string}[]>([]);
-  const [transactions, setTransactions] = useState<ReactNode[][]>([[]]);
+  const [transactionsNode, setTransactionsNode] = useState<ReactNode[][]>([[]]);
+  const [transactionsData, setTransactionsData] = useState<RegistryData[]>();
+  const [transactionDetail, setTransactionDetail] = useState<RegistryData>();
+  const [numTransactions, setNumTransactions] = useState(0);
   const [offlineMode, setOfflineMode] = useState(false);
+  const [indexRowSelected, setIndexRowSelected] = useState<number>();
   const hasSyncedInitialData = useRef(false);
   const cardId = useRef('');
   const refYearMonth = useRef('');
+  const { addToast } = useToast();
+
+  // Modal
+  const [showModal, setShowModal] = useState(false);
+  const [messageModal, setMessageModal] = useState<string>();
+  const [titleModal, setTitleModal] = useState<string>();
+
+  // Eventos
+  const handleSaveNewReg = (data:NewRegistryFormData) => {
+    console.log('save new reg', data);
+    onReturn();
+  };
+
+  const handleNewReg = () => {
+    onNext(<NewRegistryForm yearMonth={yearMonth} onReturn={onReturn} onSave={handleSaveNewReg} />);
+  };
+
+  const handleDeleteReg = () => {
+    setTitleModal('Confirmar Exclusão');
+    setMessageModal(`Deseja confirmar a exclusão da transação "${transactionDetail?.title}"?`);
+    setShowModal(true);
+  };
+
+  const handleDeleteRegConfirmed = async () => {
+    if (!transactionDetail)
+      return;
+
+    const response = await window.pywebview?.api.deleteRegistryById(transactionDetail.id);
+    if (!response?.success) {
+      addToast({title: 'Exclusão de Dados', message: 'Não foi possível processar a solicitação!', type: 'warning'});
+      return;
+    }
+
+    addToast({title: 'Exclusão de Dados', message: 'Dados excluídos com êxito!', type: 'success'});
+    loadTransactions();
+  };
+
+  const handleTableTransactionsRowSelected = (index?:number) => {
+    const transactionData = transactionsData && index != undefined? transactionsData[index] : undefined;
+    setTransactionDetail(transactionData);
+    setIndexRowSelected(index);
+
+    console.log(transactionData);
+    if (transactionData) {
+    }
+  };
+
+  // Funções
+  const clearTransactionSelection = () => {
+    setTransactionDetail(undefined);
+    setIndexRowSelected(undefined);
+  };
 
   const loadTransactions = () => {
     window.pywebview?.api.getRegistries({yearMonth, cardId: cardId.current? parseInt(cardId.current) : undefined}).then((result) => {
@@ -46,31 +121,28 @@ export default function HomeRegistries({ yearMonth, onNext, onReturn }:HomeRegis
       setSumOut('R$ ' + _sumOut.toLocaleString('BRL'));
       setAmount('R$ ' + (_amount = _sumIn - _sumOut).toLocaleString('BRL'));
       setPositiveAmount(_amount >= 0);
+      setNumTransactions(result.data.length);
+      setTransactionsData(result.data);
 
-      setTransactions(result.data.map(reg => {
+      // limpando cache
+      clearTransactionSelection();
+
+      setTransactionsNode(result.data.map(reg => {
         return [
-          reg.type_in? <span className='win-icon' title='entrada' style={{color: 'var(--success-color)'}}>&#xF08E;</span> : <span className='win-icon' title='saída' style={{color: 'var(--fail-color)'}}>&#xF090;</span>,
+          reg.type_in? ICON_TRANSACTION_IN : ICON_TRANSACTION_OUT,
           reg.title + (reg.installment_formatted? ` (${reg.installment_formatted})` : ''),
-          reg.value_formatted,
-          <span className={'transaction-status transaction-status-'+reg.status.toLowerCase()}>{reg.status}</span>,
+          'R$ ' + reg.value.toLocaleString('BRL'),
+          <span className={'transaction-status transaction-status-'+reg.status.toLowerCase()}>{STATUS_BY_NAME[reg.status]}</span>,
           reg.occurrence_formatted,
           reg.responsable_name,
+          reg.card_name,
         ]
       }));
     });
   };
-
-  const onSaveNewReg = (data:NewRegistryFormData) => {
-    console.log('save new reg', data);
-    onReturn();
-  };
-
-  const handleNewReg = () => {
-    onNext(<NewRegistryForm yearMonth={yearMonth} onReturn={onReturn} onSave={onSaveNewReg} />);
-  };
-
+  
   if (yearMonth != refYearMonth.current) {
-    console.log('change refYear from', refYearMonth.current, 'to', yearMonth);
+    // console.log('change refYear from', refYearMonth.current, 'to', yearMonth);
     refYearMonth.current = yearMonth;
     loadTransactions();
   }
@@ -118,37 +190,107 @@ export default function HomeRegistries({ yearMonth, onNext, onReturn }:HomeRegis
   }, []);
 
   const transactionsContent = transactionsViewMode == 'table'?
-    <Table columns={['Tipo', 'Título', 'Valor', 'Status', 'Ocorrência', 'Responsável']} values={transactions}/> :
+    <Table columns={['Tipo', 'Título', 'Valor', 'Status', 'Ocorrência', 'Responsável', 'Cartão']} indexRowSelected={indexRowSelected} selectable hiddenIndexColumns={cardId.current? [6] : undefined} onRowSelected={handleTableTransactionsRowSelected} values={transactionsNode}/> :
     '';
 
   return (
-    <div className='card home-registries' style={{overflow: 'auto', paddingTop: '0'}}>
+    <div className='home-regs-container'>
+      <div className='card transactions'>
 
-      <div className='header' style={{position: 'sticky', top: '0', zIndex: '10', background: 'inherit', padding: '1rem 0'}}>
-        <p className='title' style={{marginRight: 'auto'}}>Transações</p>
-        <div className='details'>
-          <MoneyReciveSVG height='25' width='25' style={{color: 'var(--success-color)'}}/>
-          <p title='total de entradas'>{sumIn}</p>
-          <MoneySendSVG height='25' width='25' style={{color: 'var(--fail-color)'}}/>
-          <p title='total de saídas'>{sumOut}</p>
-          {
-            positiveAmount?
-            <MoneySuccessSVG height='25' width='25' style={{color: 'var(--success-color)'}}/> :
-            <MoneyAlertSVG height='25' width='25' style={{color: 'var(--fail-color)'}}/>
-          }
-          <p title='saldo final'>{amount}</p>
+        <div className='transactions-header' style={{position: 'sticky', top: '0', zIndex: '10', background: 'inherit', padding: '1rem 0'}}>
+          <p className='title'>Transações</p>
+          <p className='counter' style={{marginRight: 'auto'}}>{numTransactions}</p>
+          <div className='transactions-header-details'>
+            <MoneyReciveSVG height='25' width='25' style={{color: 'var(--success-color)'}}/>
+            <p title='total de entradas'>{sumIn}</p>
+            <MoneySendSVG height='25' width='25' style={{color: 'var(--fail-color)'}}/>
+            <p title='total de saídas'>{sumOut}</p>
+            {
+              positiveAmount?
+              <MoneySuccessSVG height='25' width='25' style={{color: 'var(--success-color)'}}/> :
+              <MoneyAlertSVG height='25' width='25' style={{color: 'var(--fail-color)'}}/>
+            }
+            <p title='saldo final'>{amount}</p>
+          </div>
+          <div className='v-line'/>
+          <SelectCancelable title='Cartão' notStretch values={cards} disabled={offlineMode} onChanged={c => {cardId.current = c; loadTransactions()}} />
+          <button className='btn btn-outline win-icon' onClick={handleNewReg}>&#xF8AA;</button>
+          <div className='select-btn-group'>
+            <button className={`btn win-icon ${transactionsViewMode == 'table' && 'btn-focus'}`} onClick={() => setTransactionsViewMode('table')}>&#xF2C7;</button>
+            <button className={`btn win-icon ${transactionsViewMode == 'grid' && 'btn-focus'}`} onClick={() => setTransactionsViewMode('grid')}>&#xE8A9;</button>
+          </div>
         </div>
-        <div className='v-line'/>
-        <SelectCancelable title='Cartão' notStretch values={cards} disabled={offlineMode} onChanged={c => {cardId.current = c; loadTransactions()}} />
-        <button className='btn btn-outline win-icon' onClick={handleNewReg}>&#xF8AA;</button>
-        <div className='select-btn-group'>
-          <button className={`btn win-icon ${transactionsViewMode == 'table' && 'btn-focus'}`} onClick={() => setTransactionsViewMode('table')}>&#xF2C7;</button>
-          <button className={`btn win-icon ${transactionsViewMode == 'grid' && 'btn-focus'}`} onClick={() => setTransactionsViewMode('grid')}>&#xE8A9;</button>
+
+        <div className='transactions-content'>
+          {transactionsContent}
         </div>
+        
       </div>
 
-      {transactionsContent}
+      <div className='card transaction-details' hidden={transactionDetail === undefined}>
+        <div style={{display: 'flex', alignItems: 'center', columnGap: 'var(--gap)'}}>
+          <p className='title' style={{marginRight: 'auto'}}>Detalhes</p>
+          <button className='btn btn-outline win-icon' onClick={handleDeleteReg}>&#xe74d;</button>
+          <button className='btn btn-outline win-icon' onClick={clearTransactionSelection}>&#xEA4C;</button>
+        </div>
+        <div>
+          <p>Título</p>
+          <p className='form-control-label'>{transactionDetail?.title ?? '-'}</p>
+        </div>
+        <div>
+          <p>Tipo</p>
+          <p className='form-control-label'>{transactionDetail? (transactionDetail.type_in? 'Entrada' : 'Saída') : '-'}</p>
+        </div>
+        <div>
+          <p>Valor</p>
+          <p className='form-control-label'>{'R$ ' + (transactionDetail?.value ?? 0).toLocaleString('BRL')}</p>
+        </div>
+        <div hidden={!transactionDetail?.occurrence_formatted}>
+          <p>Ocorrência</p>
+          <p className='form-control-label'>{transactionDetail?.occurrence_formatted ?? '-'}</p>
+        </div>
+        <div hidden={!transactionDetail?.category}>
+          <p>Categoria</p>
+          <p className='form-control-label'>{transactionDetail?.category ?? '-'}</p>
+        </div>
+        <div hidden={!transactionDetail?.card_name}>
+          <p>Cartão</p>
+          <p className='form-control-label'>{transactionDetail?.card_name? transactionDetail?.card_name: '-'}</p>
+        </div>
+        <div hidden={!transactionDetail?.description}>
+          <p>Descrição</p>
+          <p className='form-control-label'>{transactionDetail?.description ?? '-'}</p>
+        </div>
+        <div hidden={!transactionDetail?.responsable_name}>
+          <p>Responsável</p>
+          <p className='form-control-label'>{transactionDetail?.responsable_name? transactionDetail?.responsable_name : '-'}</p>
+        </div>
+        <div>
+          <p>Status</p>
+          <div style={{display: 'flex'}}>
+            {
+              transactionDetail?.status?
+              <span style={{marginTop: '5px'}} className={'transaction-status transaction-status-'+transactionDetail.status.toLowerCase()}>{STATUS_BY_NAME[transactionDetail.status]}</span>
+              :
+              <p className='form-control-label'>-</p>
+            }
+          </div>
+        </div>
+      </div>
+  
 
+      {/* <button onClick={() => setShowModal(true)}>Abrir Modal Nativo</button> */}
+      <DialogConfirm onClose={() => setShowModal(false)} show={showModal} message={messageModal} title={titleModal} onConfirm={handleDeleteRegConfirmed} />
+
+
+      {/* <dialog ref={dialogRef} style={{ borderRadius: 'var(--border-radius)', padding: 'var(--padding)', minWidth: '400px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', rowGap: 'var(--gap)' }}>
+        <p className='title'>Confirmar Exclusão</p>
+        <p>Você confirma a exclusão de ""?</p>
+        <div style={{display: 'flex'}}>
+          <button className='btn btn-outline' style={{width: '100%', marginRight: 'var(--gap)'}} onClick={fecharDialog}>Cancelar</button>
+          <button className='btn btn-focus' style={{width: '100%'}} onClick={() => { console.log('Confirmado!'); fecharDialog(); }}>OK</button>
+        </div>
+      </dialog> */}
     </div>
   );
 }

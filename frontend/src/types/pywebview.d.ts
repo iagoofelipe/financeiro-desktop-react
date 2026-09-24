@@ -32,12 +32,11 @@ export interface RegistryData {
   id: number;
   title: string;
   value: number;
-  value_formatted: string;
   status: 'LATE' | 'OK' | 'ACCOUNTED' | 'PENDING';
   occurrence: string;
   occurrence_formatted: string;
   description?: string;
-  cateogry: string;
+  category: string;
   date_ref: string;
   type_in: boolean;
   card_name: string;
@@ -72,6 +71,7 @@ export interface PyWebViewAPI {
   getRegistries: (params:{yearMonth?:string, cardId?:number}) => Promise<Response<RegistryData[]>>;
   getBalance: (params:{yearMonth?:string}) => Promise<Response<BalanceData>>;
   getSuggestionCategories: () => Promise<Response<string[]>>;
+  deleteRegistryById: (id:number) => Promise<Response<null>>;
 }
 
 declare global {
