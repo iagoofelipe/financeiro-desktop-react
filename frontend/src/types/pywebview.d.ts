@@ -1,3 +1,5 @@
+import type { NewRegistryFormData } from "../components/NewRegistryForm";
+
 export interface CreateAccountData {
   username: string;
   password: string;
@@ -52,10 +54,14 @@ export interface RegistryData {
 
 export interface BalanceData {
   total_in: number;
+  total_in_progress: boolean;
+  total_in_progress_description: string;
   total_out: number;
-  prev_total_in: number;
-  prev_total_out: number;
-  total_amount: number;
+  total_out_progress: boolean;
+  total_out_progress_description: string;
+  prev_month_in: number;
+  prev_month_out: number;
+  current_balance: number;
 }
 
 export interface Response<T> {
@@ -77,6 +83,7 @@ export interface PyWebViewAPI {
   getBalance: (params:{yearMonth?:string}) => Promise<Response<BalanceData>>;
   getSuggestionCategories: () => Promise<Response<string[]>>;
   deleteRegistryById: (id:number) => Promise<Response<null>>;
+  addRegistry: (params:NewRegistryFormData) => Promise<Response<RegistryData>>;
   getResponsables: () => Promise<Response<ResponsableData[]>>;
   clearCache: () => Promise<void>;
 }

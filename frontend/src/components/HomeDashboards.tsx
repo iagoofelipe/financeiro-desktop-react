@@ -1,4 +1,9 @@
+import ProgressDownSVG from '../assets/progress-down.svg?react'
+import ProgressUpSVG from '../assets/progress-up.svg?react'
+import '../styles/components/HomeDashboards.css'
+
 import { useEffect, useRef, useState } from "react";
+import type { BalanceData } from '../types/pywebview';
 
 interface HomeDashboardsProps {
   yearMonth: string;
@@ -6,7 +11,7 @@ interface HomeDashboardsProps {
 
 export default function HomeDashboards({ yearMonth }:HomeDashboardsProps) {
   const hasSyncedInitialData = useRef(false);
-  const [content, setContent] = useState('');
+  const [balance, setBalance] = useState<BalanceData>();
   const refYearMonth = useRef(yearMonth);
 
   const loadBalance = () => {
@@ -14,7 +19,7 @@ export default function HomeDashboards({ yearMonth }:HomeDashboardsProps) {
       if (!response.success || !response.data)
         return;
 
-      setContent(`TotalIn: ${response.data.total_in} TotalOut: ${response.data.total_out} PrevTotalIn: ${response.data.total_in} PrevTotalOut: ${response.data.prev_total_out} Amount: ${response.data.total_amount}`);
+      setBalance(response.data);
     });
   };
 
@@ -46,6 +51,29 @@ export default function HomeDashboards({ yearMonth }:HomeDashboardsProps) {
   }, []);
 
   return (
-    <div className='card' style={{height: '100%'}}>{content}</div>
+    <>
+    <div className='card dash-first-card'>
+      <div style={{display: "flex", columnGap: "var(--gap)"}}>
+        <img src='/imgs/money-in.svg' height='60px'/>
+        <div>
+          <p className='subtitle'>Entradas</p>
+          <p>R$ <span>{balance?.total_in.toLocaleString("BRL")}</span></p>
+          <div style={{display: "flex"}}>
+            {balance?.total_in_progress?
+              <ProgressUpSVG color="green" height="25" width="25"/> :
+              <ProgressDownSVG color="red" height="25" width="25"/>
+            }
+            <p style={{marginLeft: "5px"}}>{balance?.total_in_progress_description}</p>
+          </div>
+        </div>
+      </div>
+      <img src='/imgs/money-out.svg' height='60px'/>
+      <img src='/imgs/balance.svg' height='60px'/>
+      {balance?.total_out_progress?
+        <ProgressDownSVG color="green" height="25" width="25"/> :
+        <ProgressUpSVG color="red" height="25" width="25"/>
+      }
+    </div>
+    </>
   );
 }

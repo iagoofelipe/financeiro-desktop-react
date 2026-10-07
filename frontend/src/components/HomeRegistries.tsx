@@ -53,9 +53,16 @@ export default function HomeRegistries({ yearMonth, syncTriggerCount, onNext, on
   const [titleModal, setTitleModal] = useState<string>();
 
   // Eventos
-  const handleSaveNewReg = (data:NewRegistryFormData) => {
-    console.log('save new reg', data);
-    onReturn();
+  const handleSaveNewReg = async (data:NewRegistryFormData) => {
+    const response = await window.pywebview?.api.addRegistry(data);
+    if (response) {
+      if (response.success) {
+        addToast({title: 'Novo Registro', message: 'Dados armazenados com sucesso!', type: 'success'});
+        onReturn();
+      } else
+        addToast({title: 'Novo Registro', message: response.error, type: 'danger'});
+    } else
+      addToast({title: 'Novo Registro', message: 'Não foi possível processar a solicitação (InternalError)', type: 'danger'});
   };
 
   const handleNewReg = () => {

@@ -115,8 +115,6 @@ class AppModel:
       case 'POST':  func = requests.post
       case _:       raise ValueError(f'method {method} not available')
 
-    log.debug(f'[AppModel::request] {method=} {endpoint=} {kwargs=}')
-
     try:
       response = func(self._host+endpoint, **kwargs)
     except requests.ConnectionError as e:

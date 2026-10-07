@@ -1,4 +1,4 @@
-import time
+import logging as log
 
 from backend.model.appmodel import AppModel
 from backend.model.consts import *
@@ -56,6 +56,19 @@ class JavaScriptAPI:
   def clearCache(self):
     self._cache.clear()
 
+  def addRegistry(self, params):
+    if 'cardId' in params:
+      params['card_id'] = params.pop('cardId')
+    if 'responsableId' in params:
+      params['responsable_id'] = params.pop('responsableId')
+    params['type_in'] = params.pop('typeIn')
+    params['installment_current'] = params.pop('currentInstallment')
+    params['installment_total'] = params.pop('totalInstallments')
+    params['date_ref'] = params.pop('yearMonth')
+
+    self.clearCache()
+    return self._model.request('POST', '/addRegistry', json=params)
+
   #-----------------------------------------------------
   # eventos
   def on_model_userAuthenticated(self):
@@ -63,17 +76,24 @@ class JavaScriptAPI:
 
   def on_model_userLoggedOut(self):
     self._authenticated = False
-    self._cache.clear()
+    self.clearCache()
   
   #-----------------------------------------------------
   # métodos privados
-  def _save_cache(self, endpoint:str, **kwargs):
-    if endpoint not in self._cache or self._cache[endpoint]['kwargs'] != kwargs:
-      self._cache[endpoint] = {
+  def _save_cache(self, endpoint:str, params=None, **kwargs):
+    cache_key = (endpoint, *params.keys(), *params.values()) if params else (endpoint, )
+    has_cache = cache_key in self._cache
+    log.debug(f"cache request <{endpoint=} {params=} {has_cache=}>")
+    
+    if not has_cache:
+      if params:
+        kwargs['params'] = params
+      self._cache[cache_key] = {
         'response': self._model.request('GET', endpoint, **kwargs),
         'kwargs': kwargs,
       }
-    return self._cache[endpoint]['response']
+    
+    return self._cache[cache_key]['response']
 
   #-----------------------------------------------------
   

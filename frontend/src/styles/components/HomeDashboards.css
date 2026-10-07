@@ -1,0 +1,15 @@
+:root {
+  --dash-first-card-bg: #d1e4d2;
+  --dash-first-card-border-color: #516152;
+}
+
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --dash-first-card-bg: #2b362c;
+  }
+}
+
+.dash-first-card {
+  background: var(--dash-first-card-bg);
+}
