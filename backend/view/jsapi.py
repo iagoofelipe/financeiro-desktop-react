@@ -69,6 +69,12 @@ class JavaScriptAPI:
     self.clearCache()
     return self._model.request('POST', '/addRegistry', json=params)
 
+  def getInvoiceByCardId(self, id, yearMonth):
+    return self._save_cache('/getInvoiceByCard', params={
+      'date_ref': yearMonth+'-01',
+      'field': 'id',
+      'q': id,
+    })
   #-----------------------------------------------------
   # eventos
   def on_model_userAuthenticated(self):

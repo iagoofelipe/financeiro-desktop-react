@@ -204,8 +204,10 @@ export default function HomeRegistries({ yearMonth, syncTriggerCount, onNext, on
       <div className='card transactions'>
 
         <div className='transactions-header' style={{position: 'sticky', top: '0', zIndex: '10', background: 'inherit', padding: '1rem 0'}}>
-          <p className='title'>Transações</p>
-          <p className='counter' style={{marginRight: 'auto'}}>{numTransactions}</p>
+          <div style={{display: "flex", marginRight: "auto"}}>
+            <p className='title-2' style={{marginRight: "5px"}}>Transações</p>
+            <p className='counter'>{numTransactions}</p>
+          </div>
           <div className='transactions-header-details'>
             <MoneyReciveSVG height='25' width='25' style={{color: 'var(--success-color)'}}/>
             <p title='total de entradas'>{sumIn}</p>
@@ -284,19 +286,7 @@ export default function HomeRegistries({ yearMonth, syncTriggerCount, onNext, on
         </div>
       </div>
   
-
-      {/* <button onClick={() => setShowModal(true)}>Abrir Modal Nativo</button> */}
       <DialogConfirm onClose={() => setShowModal(false)} show={showModal} message={messageModal} title={titleModal} onConfirm={handleDeleteRegConfirmed} />
-
-
-      {/* <dialog ref={dialogRef} style={{ borderRadius: 'var(--border-radius)', padding: 'var(--padding)', minWidth: '400px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', rowGap: 'var(--gap)' }}>
-        <p className='title'>Confirmar Exclusão</p>
-        <p>Você confirma a exclusão de ""?</p>
-        <div style={{display: 'flex'}}>
-          <button className='btn btn-outline' style={{width: '100%', marginRight: 'var(--gap)'}} onClick={fecharDialog}>Cancelar</button>
-          <button className='btn btn-focus' style={{width: '100%'}} onClick={() => { console.log('Confirmado!'); fecharDialog(); }}>OK</button>
-        </div>
-      </dialog> */}
     </div>
   );
 }

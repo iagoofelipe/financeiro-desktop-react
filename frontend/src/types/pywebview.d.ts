@@ -64,6 +64,21 @@ export interface BalanceData {
   current_balance: number;
 }
 
+export interface InvoiceData {
+  id: number;
+  date_ref: string;
+  date_ref_formatted: string;
+  closing_date: string;
+  closing_date_formatted: string;
+  due_date: string;
+  due_date_formatted: string;
+  limit: number;
+  card_id: number;
+  card_name: string;
+  sum_registred: number;
+  sum_pending: number;
+}
+
 export interface Response<T> {
   success:boolean;
   error:string;
@@ -85,6 +100,7 @@ export interface PyWebViewAPI {
   deleteRegistryById: (id:number) => Promise<Response<null>>;
   addRegistry: (params:NewRegistryFormData) => Promise<Response<RegistryData>>;
   getResponsables: () => Promise<Response<ResponsableData[]>>;
+  getInvoiceByCardId: (id:number, yearMonth: string) => Promise<Response<InvoiceData>>;
   clearCache: () => Promise<void>;
 }
 

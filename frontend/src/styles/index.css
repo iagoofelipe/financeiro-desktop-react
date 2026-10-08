@@ -4,7 +4,6 @@
   --bg: #F9F9F9;
   --bg-secondary: #ffffff;
   --bg-tertiary: #F3F3F3;
-  /* --border-color: #e5e4e7; */
   --border-color: rgba(0, 0, 0, 0.175);
   --border-radius: .375rem;
   --gap: 1rem;
@@ -43,7 +42,6 @@
     --bg: #000000;
     --bg-secondary: #121212;
     --bg-tertiary: #232323;
-    /* --border-color: #2e303a; */
     --border-color: rgba(255, 255, 255, 0.175);
     --bg-highlight-secondary: rgba(252, 101, 0, 0.1);
     --success-color: #205e20;
@@ -114,7 +112,19 @@ option {
 
 .title-2 {
   font-size: 1.25rem;
+  font-weight: 500;
 }
+
+.title-3, .form-control-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.form-control-label {
+  margin-bottom: .5rem;
+}
+
 
 .btn {
   padding: 9px;
@@ -189,11 +199,6 @@ input:disabled {
   &[type=number]::-webkit-outer-spin-button {
     background-color: transparent;
   }
-}
-
-.form-control-label {
-  margin-bottom: .5rem;
-  color: var(--text-secondary);
 }
 
 select.form-control {

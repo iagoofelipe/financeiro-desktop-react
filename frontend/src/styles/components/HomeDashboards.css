@@ -12,4 +12,42 @@
 
 .dash-first-card {
   background: var(--dash-first-card-bg);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  color: var(--text-secondary);
+
+  * {
+    font-size: 10pt;
+    font-weight: bold;
+  }
+
+  img {
+    height: 60px;
+    width: 60px;
+  }
+
+  .item-group {
+    display: flex;
+    column-gap: 5px;
+    align-items: center;
+  }
+
+  .item-group-text-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .value {
+      font-size: 20pt;
+      font-weight: 500;
+      color: var(--text);
+    }
+  }
+}
+
+.card-invoice {
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--gap);
 }
